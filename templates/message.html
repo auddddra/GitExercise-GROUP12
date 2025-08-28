@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block head %}
+<h1>MESSAGE FORM</h>
+
+{% endblock %}
+
+{% block body %}
+<form action="/save_message" method="post">
+    <label for="place_name">Place Name:</label><br>
+    <input type="text" id="place_name" name="place_name" required><br><br>
+
+    <label for="message">Your Message:</label><br>
+    <textarea id="message" name="message" rows="4" cols="50" required></textarea><br><br>
+
+    <input type="hidden" name="lat" value="{{ lat }}">
+    <input type="hidden" name="lng" value="{{ lng }}">
+
+    <input type="submit" value="Submit">
+</form>
+{% endblock %}
