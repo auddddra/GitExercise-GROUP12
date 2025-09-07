@@ -4,21 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{url_for('static', filename='styles.css')}}">
-    <h1>MMU MUSEUM OF HEARTS</h1>
-    <p>stories of each and every spot in multimedia university.</p>
+    <link href="https://fonts.googleapis.com/css2?family=Homemade+Apple&display=swap" rel="stylesheet">
     {% block head %}
     {% endblock %}
-    
 </head>
 <body>
     {% block body %}
     {% endblock %}
+    
+    <footer>
+        {% block footer %}
+        {% endblock %}
+        {% if request.endpoint != 'index' %}
+            <div class="footer-home">
+                <a href="{{ url_for('index')}}" target="_self">HOME</a>
+            </div>
+        {% endif %}
+        <div class="footer-rights">
+            <p>2025 all rights reserved</p>
+        </div>
+    </footer>
 </body>
-<footer>
-    {% block footer %}
-    {% endblock %}
-    {% if request.endpoint != 'index' %}
-        <a href="{{ url_for('index')}}" target="_self">HOME</a>
-    {% endif %}
-    <p>2025 all rights reserved</p>
 </html>

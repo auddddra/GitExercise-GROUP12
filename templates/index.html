@@ -1,34 +1,128 @@
 <!--inherits from base.html-->
 {% extends "base.html" %}
 
-
-<!--head-->
-{% block head %}
-<title>MMU Museum of Hearts</title>
-{% endblock %}
- 
-
-
-<!--body-->
 {% block body %}
-<a href="" target="_self">Tell us your story</a>
-<a href="{{ url_for('search')}}" target="_self">Browse stories here</a>
+<div class="header-section">
+    <h1>Museum of Hearts</h1>
+    <p>memories and untold feelings at every spot in Multimedia University</p>
 
-<div class="map">
-    <p>here will be the map</p>
+    <div class="header-actions">
+        <form method="GET" action="{{ url_for('index') }}" class="search-form">
+            <input type="search" name="q" placeholder="Search name or place..." value="{{ request.args.get('q', '') }}">
+            <button type="submit">🔍</button>
+        </form>
+
+        <a href="{{ url_for('create') }}" class="btn-outline"> 💌 Tell us your story</a>
+    </div>
 </div>
 
-<div class="cards">
-    <p>here will be the cards</p>
+<div class="gallery">
+    <!-- Demo card 1 -->
+    <div class="card">
+        <h3>To: Aisyah</h3>
+        <h4 class="location">The Bridge Near FOM</h4>
+        <p class="message">I always stopped here after class with my best friend.  
+        It felt like time froze for a moment.</p>
+        <iframe style="border-radius:12px" 
+            src="https://open.spotify.com/embed/track/5k38wzpLb15YgncyWdTZE4" 
+            width="100%" height="80" frameborder="0" 
+            allowtransparency="true" allow="encrypted-media">
+        </iframe>
+    </div>
+
+    <!-- Demo card 2 -->
+    <div class="card">
+        <h3>To: Melissa</h3>
+        <h4 class="location">The Library Steps</h4>
+        <p class="message">Where I met you for the first time.  
+        Every time I pass by, this song plays in my head:</p>
+        <iframe style="border-radius:12px" 
+            src="https://open.spotify.com/embed/track/0tgVpDi06FyKpA1z0VMD4v" 
+            width="100%" height="80" frameborder="0" 
+            allowtransparency="true" allow="encrypted-media">
+        </iframe>
+    </div>
+
+    <!-- Demo card 3 -->
+    <div class="card">
+        <h3>To: Adrianna</h3>
+        <h4 class="location">The Lake</h4>
+        <p class="message">I used to sit here every evening, watching the sunset.  
+        It was my safe place during stressful days.</p>
+        <iframe style="border-radius:12px" 
+            src="https://open.spotify.com/embed/track/3ZCTVFBt2Brf31RLEnCkWJ" 
+            width="100%" height="80" frameborder="0" 
+            allowtransparency="true" allow="encrypted-media">
+        </iframe>
+    </div>
+
+    <!-- Demo card 4 -->
+    <div class="card">
+        <h3>To: Hafiz</h3>
+        <h4 class="location">Cafeteria Corner</h4>
+        <p class="message">The spot where laughter was louder than anything.  
+        I’ll always remember our nasi lemak mornings.</p>
+        <iframe style="border-radius:12px" 
+            src="https://open.spotify.com/embed/track/0VjIjW4GlUZAMYd2vXMi3b" 
+            width="100%" height="80" frameborder="0" 
+            allowtransparency="true" allow="encrypted-media">
+        </iframe>
+    </div>
+
+    <!-- Demo card 5 -->
+    <div class="card">
+        <h3>To: Him</h3>
+        <h4 class="location">FCM</h4>
+        <p class="message">I think about it somethimes, it was a nice memory</p>
+        <iframe style="border-radius:12px" 
+            src="https://open.spotify.com/embed/track/4uLU6hMCjMI75M1A2tKUQC" 
+            width="100%" height="80" frameborder="0" 
+            allowtransparency="true" allow="encrypted-media">
+        </iframe>
+    </div>
+
+    <!-- Demo card 6 -->
+    <div class="card">
+        <h3>To: I dont like you</h3>
+        <h4 class="location">Deens Cafe</h4>
+        <p class="message">I never want it to happen ever again, its over</p>
+        <iframe style="border-radius:12px" 
+            src="https://open.spotify.com/embed/track/3ZCTVFBt2Brf31RLEnCkWJ" 
+            width="100%" height="80" frameborder="0" 
+            allowtransparency="true" allow="encrypted-media">
+        </iframe>
+    </div>
+
+    <!-- Demo card 7 -->
+    <div class="card">
+        <h3>To: The FCA girl</h3>
+        <h4 class="location">FCM Cinema</h4>
+        <p class="message">Meeting you was one of my best memories, 
+            thank you for making my foundation life liveable</p>
+        <iframe style="border-radius:12px" 
+            src="https://open.spotify.com/embed/track/7ouMYWpwJ422jRcDASZB7P" 
+            width="100%" height="80" frameborder="0" 
+            allowtransparency="true" allow="encrypted-media">
+        </iframe>
+    </div>
+
+    <!-- Demo card 8 -->
+    <div class="card">
+        <h3>To: Mika </h3>
+        <h4 class="location">Haji Tapah</h4>
+        <p class="message">You are a good man bro, have a blessed life</p>
+        <iframe style="border-radius:12px" 
+            src="https://open.spotify.com/embed/track/1AhDOtG9vPSOmsWgNW0BEY" 
+            width="100%" height="80" frameborder="0" 
+            allowtransparency="true" allow="encrypted-media">
+        </iframe>
+    </div>
 </div>
-
-
 {% endblock %}
 
 
-
-
-<!--footer-->
 {% block footer %}
-<a href="{{ url_for('contacts')}}" target="_self">Contact us for help</a>
+<div class="footer">
+    <a href="{{ url_for('contacts') }}" target="_self">Contact us for help</a>
+</div>
 {% endblock %}

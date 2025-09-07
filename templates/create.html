@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="form-section">
+    <h1>Tell Us Your Story</h1>
+    <p class="subtitle">Share your memories and let them 
+        live forever in Museum of Hearts </p>
+
+    <form method="POST" action="{{ url_for('create') }}" class="story-form" enctype="multipart/form-data">
+        <label for="to_name">To:</label>
+        <input type="text" id="to_name" name="to_name" placeholder="Recepient's name" required>
+
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" placeholder="e.g. FCM Cinema" required>
+
+        <label for="message">Message:</label>
+        <textarea id="message" name="message" rows="5" placeholder="What something you'd like them to know?..." required></textarea>
+
+        <!-- Song search -->
+        <label for="songSearch">Search for a Spotify Song (Required):</label>
+        <div class="song-search-container">
+        <input type="text" id="songSearch" placeholder="Type a song name...">
+        <button type="button" onclick="searchSong()">Search</button>
+        </div>
+        <div id="results" class="song-results"></div>
+        <p id="chosenSong" class="chosen-song"></p>
+        <input type="hidden" id="song" name="song" required>
+
+
+        <label for="photo">Attach a Photo (Optional):</label>
+        <input type="file" id="photo" name="photo" accept="image/*">
+
+        <label for="video">Attach a Video (Optional):</label>
+        <input type="file" id="video" name="video" accept="video/*">
+
+        <label for="from_name">From (Optional):</label>
+        <input type="text" id="from_name" name="from_name" placeholder="you can stay anonymous :D">
+
+        <button type="submit" class="btn-submit">💌 Submit Story</button>
+    </form>
+</div>
+
+<script>
+async function searchSong() {
+    const query = document.getElementById("songSearch").value;
+    if (!query) return;
+
+    const res = await fetch(`/search?q=${encodeURIComponent(query)}`);
+    const data = await res.json();
+
+    const resultsDiv = document.getElementById("results");
+    resultsDiv.innerHTML = "";
+
+    if (data.tracks && data.tracks.items.length > 0) {
+        data.tracks.items.forEach(track => {
+            const div = document.createElement("div");
+            div.style.cursor = "pointer";
+            div.style.margin = "10px 0";
+            div.innerHTML = `
+                <img src="${track.album.images[2]?.url}" width="50" style="vertical-align:middle;">
+                <strong>${track.name}</strong> — ${track.artists.map(a => a.name).join(", ")}
+            `;
+
+            // When clicked, save the Spotify link
+            div.onclick = () => {
+                document.getElementById("song").value = track.external_urls.spotify;
+                document.getElementById("chosenSong").innerText = 
+                    `Selected: ${track.name} — ${track.artists.map(a => a.name).join(", ")}`;
+            };
+
+            resultsDiv.appendChild(div);
+        });
+    } else {
+        resultsDiv.innerText = "No results found.";
+    }
+}
+</script>
+{% endblock %}
+

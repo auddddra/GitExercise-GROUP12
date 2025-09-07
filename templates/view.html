@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="heart-container">
+    <h1>{{ title }}</h1>
+    <p><strong>To:</strong> {{ to_name or "Anonymous" }}</p>
+    <p><strong>From:</strong> {{ from_name or "Anonymous" }}</p>
+    <p><strong>Location:</strong> {{ location or "Unknown" }}</p>
+
+    <div class="message-section">
+        <p>{{ message }}</p>
+    </div>
+
+    {% if photo %}
+    <div class="photo-section">
+        <img src="{{ url_for('static', filename='uploads/' ~ photo.filename) }}" alt="Photo" style="max-width:300px;">
+    </div>
+    {% endif %}
+
+    {% if video %}
+    <div class="video-section">
+        <video controls width="300">
+            <source src="{{ url_for('static', filename='uploads/' ~ video.filename) }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+    {% endif %}
+
+    {% if song %}
+    <div class="song-section" style="margin-top:20px;">
+        <h3>Song:</h3>
+        {% set track_id = song.split('/track/')[1].split('?')[0] %}
+        <iframe src="https://open.spotify.com/embed/track/{{ track_id }}"
+                width="300" height="80" frameborder="0"
+                allowtransparency="true" allow="encrypted-media">
+        </iframe>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
