@@ -1,72 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Here!</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Here!</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <!-- Login Form -->
-         <div class="form-box login">
-            <form action="#">
-                <h1>Login</h1>
-                <div class="input-box">
-                    <input type="text" placeholder="Username" required>
-                    <i class="fa-solid fa-user"></i>
-                </div>
-                <div class="input-box">
-                    <input type="password" placeholder="Password" required>
-                    <i class="fa-solid fa-lock"></i>
-                </div>
-                <div class="forgot-link">
-                    <a href="#">Forgot Password?</a>
-                </div>
-                <button type="submit" class="btn">Login</button>
-            </form>
-         </div>
+  <div class="container">
 
-         <!-- Register Form -->
-          <div class="form-box register">
-            <form action="#">
-                <h1>Register</h1>
-                <div class="input-box">
-                    <input type="text" placeholder="Username" required>
-                    <i class="fa-solid fa-user"></i>
-                </div>
-                <div class="input-box">
-                    <input type="email" placeholder="Email" required>
-                    <i class="fa-solid fa-envelope"></i>
-                </div>
-                <div class="input-box">
-                    <input type="password" placeholder="Password" required>
-                    <i class="fa-solid fa-lock"></i>
-                </div>
-                <button type="submit" class="btn">Register</button>
-            </form>
-         </div>
-
-          </div>
-
-          <!-- Toggle Box -->
-           <div class="toggle-box"></div>
-
-           <!-- Toggle Box Left -->
-            <div class="toggle-panel toggle-left">
-                <h1>Welcome to MMU Museum of Hearts!</h1>
-                <p>Don't have an account yet?</p>
-                <button class="btn register-btn">Register</button>
-            </div>
-           
-            <!-- Toggle Box Right -->
-             <div class="toggle-panel toggle-right">
-                <h1>Welcome!</h1>
-                <p>Already have an account?</p>
-                <button class="btn login-btn">Login</button>
-             </div>
+    <style>
+        h1 {text-align: center; }
+    </style>
+    
+    <!-- Left Welcome Panel (always visible) -->
+    <div class="toggle-panel toggle-left">
+      <h1>Welcome to MMU Museum of Hearts!</h1>
+      <p id="welcome-text">Don't have an account yet?</p>
+      <button class="btn register-btn">Register</button>
+      <button class="btn login-btn" style="display: none;">Login</button>
     </div>
+
+    <!-- Right Form Container -->
+    <div class="form-container">
+
+      <!-- Login Form -->
+      <div class="form-box login">
+        <form action="#">
+          <h1>Login</h1>
+          <div class="input-box">
+            <input type="text" placeholder="Username" required>
+            <i class="fa-solid fa-user"></i>
+          </div>
+          <div class="input-box">
+            <input type="password" placeholder="Password" required>
+            <i class="fa-solid fa-lock"></i>
+          </div>
+          <div class="forgot-link">
+            <a href="#">Forgot Password?</a>
+          </div>
+          <button type="submit" class="btn">Login</button>
+        </form>
+      </div>
+
+      <!-- Register Form -->
+      <div class="form-box register">
+        <form action="#">
+          <h1>Register</h1>
+          <div class="input-box">
+            <input type="text" placeholder="Username" required>
+            <i class="fa-solid fa-user"></i>
+          </div>
+          <div class="input-box">
+            <input type="email" placeholder="Email" required>
+            <i class="fa-solid fa-envelope"></i>
+          </div>
+          <div class="input-box">
+            <input type="password" placeholder="Password" required>
+            <i class="fa-solid fa-lock"></i>
+          </div>
+          <button type="submit" class="btn">Register</button>
+        </form>
+      </div>
+
+      <!-- Forgot Password Form -->
+      <div class="form-box forgot">
+        <form action="#">
+          <h1>Reset Password</h1>
+          <div class="input-box">
+            <input type="email" placeholder="Enter your email" required>
+            <i class="fa-solid fa-envelope"></i>
+          </div>
+          <button type="submit" class="btn">Send Reset Link</button>
+          <button type="button" class="btn back-btn">Back to Login</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
-<script src="script.js"></script>
 </html>
