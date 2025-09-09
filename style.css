@@ -14,7 +14,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: linear-gradient(90deg, #FFDBEA, #FFE8F2);
+    background: linear-gradient(90deg, #fff0f5, #FFE8F2);
 }
 
 .container {
@@ -33,7 +33,7 @@ body {
 .toggle-panel.toggle-left {
     position: relative;
     flex: 1;
-    background: #ffbeda;
+    background: rgb(255, 211, 235);
     color: #fff;
     border-radius: 30px 0 0 30px;
     display: flex;
@@ -143,7 +143,7 @@ body {
 .btn {
     width: 100%;
     height: 48px;
-    background: #ffbeda;
+    background: rgb(255, 211, 235);
     border-radius: 8px;
     border: none;
     cursor: pointer;
