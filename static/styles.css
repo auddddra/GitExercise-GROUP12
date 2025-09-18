@@ -85,15 +85,19 @@ body {
 
 /* Gallery grid */
 .gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 1.5rem;
-    padding: 0 2rem 3rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* center the cards */
+    gap: 20px; /* space between cards */
+    margin-top: 2rem;
 }
 
 /* Story cards */
 .card {
     background: white;
+    flex: 1 1 300px;
+    max-width: 350px;
+    width: 100%;
     padding: 1.5rem;
     border-radius: 20px;
     box-shadow: 0 6px 15px rgba(0,0,0,0.08);

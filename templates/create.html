@@ -7,6 +7,7 @@
         live forever in Museum of Hearts </p>
 
     <form method="POST" action="{{ url_for('create') }}" class="story-form" enctype="multipart/form-data">
+        
         <label for="to_name">To:</label>
         <input type="text" id="to_name" name="to_name" placeholder="Recepient's name" required>
 
@@ -17,21 +18,21 @@
         <textarea id="message" name="message" rows="5" placeholder="What something you'd like them to know?..." required></textarea>
 
         <!-- Song search -->
-        <label for="songSearch">Search for a Spotify Song (Required):</label>
+        <!-- <label for="songSearch">Search for a Spotify Song (Required):</label>
         <div class="song-search-container">
         <input type="text" id="songSearch" placeholder="Type a song name...">
         <button type="button" onclick="searchSong()">Search</button>
         </div>
         <div id="results" class="song-results"></div>
         <p id="chosenSong" class="chosen-song"></p>
-        <input type="hidden" id="song" name="song" required>
+        <input type="hidden" id="song" name="song" required> -->
 
 
-        <label for="photo">Attach a Photo (Optional):</label>
-        <input type="file" id="photo" name="photo" accept="image/*">
+        <label for="photo_file">Attach a Photo (Optional):</label>
+        <input type="file" id="photo_file" name="photo_file" accept="image/*">
 
-        <label for="video">Attach a Video (Optional):</label>
-        <input type="file" id="video" name="video" accept="video/*">
+        <label for="video_file">Attach a Video (Optional):</label>
+        <input type="file" id="video_file" name="video_file" accept="video/*">
 
         <label for="from_name">From (Optional):</label>
         <input type="text" id="from_name" name="from_name" placeholder="you can stay anonymous :D">
@@ -40,7 +41,7 @@
     </form>
 </div>
 
-<script>
+<!-- <script>
 async function searchSong() {
     const query = document.getElementById("songSearch").value;
     if (!query) return;
@@ -74,6 +75,6 @@ async function searchSong() {
         resultsDiv.innerText = "No results found.";
     }
 }
-</script>
+</script> -->
 {% endblock %}
 
