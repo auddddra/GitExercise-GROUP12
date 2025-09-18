@@ -16,13 +16,23 @@
     </div>
 </div>
 
-<div id="map">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-</div>
+<div id="map"></div>
+    
 
 <script>
-    var map = L.map('map').setView([2.9273, 101.6415], 16);
+    var map = L.map('map', {
+    center: [2.9273, 101.6415],
+    zoom: 16,
+
+    });
+
+    var mapbounds = [
+        [2.9215, 101.6370], 
+        [2.9325, 101.6465]
+    ];
+    map.setMaxBounds(mapbounds);          
+    map.setView([2.9273, 101.6415], 17);  
+    map.options.maxBoundsViscosity = 1.0;
 
     // Add OpenStreetMap tiles
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -41,15 +51,15 @@
     // Load existing pins
     pins.forEach(pin => addMarker(pin.lat, pin.lng, pin.label));
 
-    // Add new pin on click
+    // add custom pins on right-click
+
     map.on('contextmenu', function(e) {
     var label = prompt("Enter a label for your pin:");
     if (label) {
-        // Add marker to map
+        
         L.marker([e.latlng.lat, e.latlng.lng]).addTo(map)
             .bindPopup("<b>" + label + "</b><br>(" + e.latlng.lat.toFixed(5) + ", " + e.latlng.lng.toFixed(5) + ")");
 
-        // Save to backend
         fetch("/api/pins", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -60,10 +70,6 @@
         .catch(err => console.error("Error saving pin:", err));
     }
     });
-
-    // Example fixed marker: MMU Main Entrance
-    L.marker([2.9273, 101.6415]).addTo(map)
-      .bindPopup("<b>MMU Cyberjaya</b><br>Main Entrance").openPopup();
 
     fetch("/api/pins")
     .then(res => res.json())
