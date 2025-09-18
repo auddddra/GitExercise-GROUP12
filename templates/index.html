@@ -16,6 +16,68 @@
     </div>
 </div>
 
+<div id="map">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</div>
+
+<script>
+    var map = L.map('map').setView([2.9273, 101.6415], 16);
+
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    function addMarker(lat, lng, label) {
+      L.marker([lat, lng]).addTo(map)
+        .bindPopup("<b>" + label + "</b><br>(" + lat.toFixed(5) + ", " + lng.toFixed(5) + ")");
+    }
+
+    // Save pins locally in browser
+    var pins = JSON.parse(localStorage.getItem("pins")) || [];
+
+    // Load existing pins
+    pins.forEach(pin => addMarker(pin.lat, pin.lng, pin.label));
+
+    // Add new pin on click
+    map.on('contextmenu', function(e) {
+    var label = prompt("Enter a label for your pin:");
+    if (label) {
+        // Add marker to map
+        L.marker([e.latlng.lat, e.latlng.lng]).addTo(map)
+            .bindPopup("<b>" + label + "</b><br>(" + e.latlng.lat.toFixed(5) + ", " + e.latlng.lng.toFixed(5) + ")");
+
+        // Save to backend
+        fetch("/api/pins", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ lat: e.latlng.lat, lng: e.latlng.lng, label: label })
+        })
+        .then(res => res.json())
+        .then(data => console.log("Pin saved:", data))
+        .catch(err => console.error("Error saving pin:", err));
+    }
+    });
+
+    // Example fixed marker: MMU Main Entrance
+    L.marker([2.9273, 101.6415]).addTo(map)
+      .bindPopup("<b>MMU Cyberjaya</b><br>Main Entrance").openPopup();
+
+    fetch("/api/pins")
+    .then(res => res.json())
+    .then(pins => {
+        pins.forEach(pin => {
+            L.marker([pin.lat, pin.lng]).addTo(map)
+                .bindPopup("<b>" + pin.label + "</b>");
+        });
+    });
+
+
+</script>
+
+
 <div class="gallery">
     <!-- Demo card 1 -->
     <div class="card">

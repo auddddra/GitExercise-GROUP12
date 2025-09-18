@@ -377,3 +377,9 @@ footer {
     color: #4caf50;
     margin-top: 5px;
 }
+
+#map {
+    height: 600px;
+    width: 100%;
+    padding: 50px
+}
