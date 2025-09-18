@@ -377,3 +377,24 @@ footer {
     color: #4caf50;
     margin-top: 5px;
 }
+
+.user-button {
+    position: absolute;
+    top: 40px;
+    right: 36px;
+}
+
+.user-button a {
+    text-decoration: none;
+    padding: 12px 20px;
+    background-color: #c794abff;
+    color: white;
+    border-radius: 50px;
+    font-weight: bold;
+}
+
+.user-button a:hover {
+    background-color: #f4bccaff;
+}
+
+
