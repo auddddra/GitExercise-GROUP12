@@ -2,19 +2,24 @@
 {% extends "base.html" %}
 
 {% block body %}
+<!-- top login/register button above header -->
+<div class="user-button">
+    <a href="login.html">Log In / Sign up</a>
+</div>
+
 <div class="header-section">
     <h1>Museum of Hearts</h1>
     <p>memories and untold feelings at every spot in Multimedia University</p>
 
     <div class="header-actions">
-        <form method="GET" action="{{ url_for('index') }}" class="search-form">
-            <input type="search" name="q" placeholder="Search name or place..." value="{{ request.args.get('q', '') }}">
+        <form method="GET" action="index.html" class="search-form">
+            <input type="search" name="q" placeholder="Search name or place...">
             <button type="submit">🔍</button>
         </form>
-
         <a href="{{ url_for('create') }}" class="btn-outline"> 💌 Tell us your story</a>
     </div>
 </div>
+
 
 <div class="gallery">
     <!-- Demo card 1 -->
