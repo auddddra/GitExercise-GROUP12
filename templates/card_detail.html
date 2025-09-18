@@ -1,42 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Card Detail</title>
+    <meta charset="utf-8">
+    <title>Memory — {{ card.to_name }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
-
 <body class="card-page">
     <div class="card-expanded">
         <h1>To: {{ card.to_name }}</h1>
         <p class="location">Location: {{ card.location }}</p>
-        <h2 class="message">"{{ card.message }}"</h2>
+        <div class="message">"{{ card.message }}"</div>
 
-            <!-- {% if card.song %}
-                <iframe style="border-radius:12px"
-                    src="{{ card.song | replace('open.spotify.com/track', 'open.spotify.com/embed/track') }}" width="100%" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media">
-                </iframe>
-            {% endif %} -->
-
-            {% if card.photo %}
-        <img src="{{ url_for('static', filename=card.photo.split('static/')[-1]) }}" 
-             alt="Uploaded photo" class="card-media">
+        {% if card.photos %}
+            <div class="photo-strip">
+            {% for p in card.photos %}
+                <img src="{{ url_for('static', filename=p.file_path) }}" alt="photo {{ loop.index }}" class="detail-photo">
+            {% endfor %}
+            </div>
         {% endif %}
 
         {% if card.video %}
-        <video class="card-media" controls>
-            <source src="{{ url_for('static', filename=card.video.split('static/')[-1]) }}" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
+            <div class="video-player" style="margin-top:1rem;">
+            <video controls style="width:100%; border-radius:12px;">
+                <source src="{{ url_for('static', filename=card.video) }}" type="video/mp4">
+            </video>
+            </div>
         {% endif %}
 
         {% if card.from_name %}
-        <p class="from">From: {{ card.from_name }}</p>
+            <div class="from">From: {{ card.from_name }}</div>
         {% endif %}
     </div>
 
-    <a href="{{ url_for('index') }}" class="back-btn">← Back to gallery</a>
+    <div style="text-align:center; margin-top:24px;">
+        <a href="{{ url_for('index') }}" class="back-btn">← Back to Gallery</a>
+    </div>
 </body>
 </html>
-    
-

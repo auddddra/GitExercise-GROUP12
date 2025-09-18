@@ -85,23 +85,26 @@ body {
 
 /* Gallery grid */
 .gallery {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center; /* center the cards */
-    gap: 20px; /* space between cards */
-    margin-top: 2rem;
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px;
+    margin-top:20px;
+}
+
+.attachments {
+    font-size: 0.9rem;
+    color: #777;
+    margin-top: 0.5rem;
 }
 
 /* Story cards */
 .card {
     background: white;
-    flex: 1 1 300px;
-    max-width: 350px;
-    width: 100%;
     padding: 1.5rem;
-    border-radius: 20px;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.08);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.06);
+    max-width: 360px;
+    margin: 12px;
 }
 
 .card a {
@@ -146,22 +149,22 @@ body {
 }
 
 body.card-page {
-    background: #ffe6f0; 
+    background: #ffe6f0;
+    margin: 0;
+    padding: 50px;
+    font-family: "Poppins", sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-family: 'Poppins', sans-serif;
-    margin: 0;
-    padding: 50px;
 }
 
 .card-expanded {
     background: white;
-    border-radius: 20px;
-    padding: 2rem;
-    max-width: 800px;
     width: 100%;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+    max-width: 800px;
+    border-radius: 20px;
+    padding: 36px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
 }
 
 .card-expanded h1 {
@@ -171,10 +174,10 @@ body.card-page {
 
 .card-expanded .message {
     font-family: 'Homemade Apple', cursive;
-    font-size: 1.3rem;
-    color: #d27b9a;
-    margin: 2rem 0;
+    font-size: 1.2rem;
     text-align: center;
+    color: #d27b9a;
+    margin: 1.5rem 0;
 }
 
 .card-expanded .from {
@@ -184,21 +187,13 @@ body.card-page {
     text-align: left;
 }
 
-.card-media {
-    margin-top: 1rem;
-    border-radius: 12px;
-    width: 100%;
-    height: auto;
-}
-
 .back-btn {
-    margin-top: 30px;
-    text-decoration: none;
-    background: #e380b0;
-    color: white;
-    padding: 0.7rem 1.5rem;
-    border-radius: 12px;
-    transition: background 0.2s ease;
+    display:inline-block;
+    padding: 10px 18px;
+    border-radius: 14px;
+    background:#e380b0;
+    color:white;
+    text-decoration:none;
 }
 
 .back-btn:hover {
@@ -450,7 +445,7 @@ footer {
 }
 
 #map {
-    height: 600px;
+    height: 100px;
     width: 100%;
     padding: 50px
 }

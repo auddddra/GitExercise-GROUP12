@@ -1,80 +1,41 @@
 {% extends "base.html" %}
-
 {% block body %}
 <div class="form-section">
-    <h1>Tell Us Your Story</h1>
-    <p class="subtitle">Share your memories and let them 
-        live forever in Museum of Hearts </p>
+  <h1>Tell Us Your Story</h1>
 
-    <form method="POST" action="{{ url_for('create') }}" class="story-form" enctype="multipart/form-data">
-        
+    <form method="POST" action="{{ url_for('create') }}" enctype="multipart/form-data" class="story-form">
         <label for="to_name">To:</label>
-        <input type="text" id="to_name" name="to_name" placeholder="Recepient's name" required>
+        <input type="text" id="to_name" name="to_name" required>
 
         <label for="location">Location:</label>
-        <input type="text" id="location" name="location" placeholder="e.g. FCM Cinema" required>
+        <input type="text" id="location" name="location" required>
 
         <label for="message">Message:</label>
-        <textarea id="message" name="message" rows="5" placeholder="What something you'd like them to know?..." required></textarea>
+        <textarea id="message" name="message" rows="5" required></textarea>
 
-        <!-- Song search -->
-        <!-- <label for="songSearch">Search for a Spotify Song (Required):</label>
-        <div class="song-search-container">
-        <input type="text" id="songSearch" placeholder="Type a song name...">
-        <button type="button" onclick="searchSong()">Search</button>
-        </div>
-        <div id="results" class="song-results"></div>
-        <p id="chosenSong" class="chosen-song"></p>
-        <input type="hidden" id="song" name="song" required> -->
+        <input type="hidden" name="lat" id="lat" value="{{ pre_lat or '' }}">
+        <input type="hidden" name="lng" id="lng" value="{{ pre_lng or '' }}">
 
+        <label for="photos">Attach Photos (Optional, up to 6)</label>
+        <input type="file" id="photos" name="photos" accept="image/*" multiple>
 
-        <label for="photo_file">Attach a Photo (Optional):</label>
-        <input type="file" id="photo_file" name="photo_file" accept="image/*">
+        <label for="video">Attach Video (Optional)</label>
+        <input type="file" id="video" name="video" accept="video/*">
 
-        <label for="video_file">Attach a Video (Optional):</label>
-        <input type="file" id="video_file" name="video_file" accept="video/*">
-
-        <label for="from_name">From (Optional):</label>
-        <input type="text" id="from_name" name="from_name" placeholder="you can stay anonymous :D">
+        <label for="from_name">From (Optional)</label>
+        <input type="text" id="from_name" name="from_name">
 
         <button type="submit" class="btn-submit">💌 Submit Story</button>
     </form>
 </div>
 
-<!-- <script>
-async function searchSong() {
-    const query = document.getElementById("songSearch").value;
-    if (!query) return;
-
-    const res = await fetch(`/search?q=${encodeURIComponent(query)}`);
-    const data = await res.json();
-
-    const resultsDiv = document.getElementById("results");
-    resultsDiv.innerHTML = "";
-
-    if (data.tracks && data.tracks.items.length > 0) {
-        data.tracks.items.forEach(track => {
-            const div = document.createElement("div");
-            div.style.cursor = "pointer";
-            div.style.margin = "10px 0";
-            div.innerHTML = `
-                <img src="${track.album.images[2]?.url}" width="50" style="vertical-align:middle;">
-                <strong>${track.name}</strong> — ${track.artists.map(a => a.name).join(", ")}
-            `;
-
-            // When clicked, save the Spotify link
-            div.onclick = () => {
-                document.getElementById("song").value = track.external_urls.spotify;
-                document.getElementById("chosenSong").innerText = 
-                    `Selected: ${track.name} — ${track.artists.map(a => a.name).join(", ")}`;
-            };
-
-            resultsDiv.appendChild(div);
-        });
-    } else {
-        resultsDiv.innerText = "No results found.";
+<script>
+    if (document.getElementById('lat').value && document.getElementById('lng').value) {
+        const lat = document.getElementById('lat').value;
+        const lng = document.getElementById('lng').value;
+        const el = document.createElement('p');
+        el.innerHTML = `<small>Memory will be placed at: <strong>${lat}, ${lng}</strong></small>`;
+        document.querySelector('.form-section').insertBefore(el, document.querySelector('.form-section').children[1]);
     }
-}
-</script> -->
+</script>
 {% endblock %}
-
