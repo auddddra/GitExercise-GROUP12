@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Card Detail</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body class="card-page">
+    <div class="card-expanded">
+        <h1>To: {{ card.to_name }}</h1>
+        <p class="location">Location: {{ card.location }}</p>
+        <h2 class="message">"{{ card.message }}"</h2>
+
+            <!-- {% if card.song %}
+                <iframe style="border-radius:12px"
+                    src="{{ card.song | replace('open.spotify.com/track', 'open.spotify.com/embed/track') }}" width="100%" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media">
+                </iframe>
+            {% endif %} -->
+
+            {% if card.photo %}
+        <img src="{{ url_for('static', filename=card.photo.split('static/')[-1]) }}" 
+             alt="Uploaded photo" class="card-media">
+        {% endif %}
+
+        {% if card.video %}
+        <video class="card-media" controls>
+            <source src="{{ url_for('static', filename=card.video.split('static/')[-1]) }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        {% endif %}
+
+        {% if card.from_name %}
+        <p class="from">From: {{ card.from_name }}</p>
+        {% endif %}
+    </div>
+
+    <a href="{{ url_for('index') }}" class="back-btn">← Back to gallery</a>
+</body>
+</html>
+    
+

@@ -113,6 +113,11 @@ def create():
 
     return render_template("create.html")
 
+@app.route("/card/<int:card_id>")
+def view_card(card_id):
+    card = Card.query.get_or_404(card_id)
+    return render_template("card_detail.html", card=card)
+
 
 
 @app.route("/contacts")

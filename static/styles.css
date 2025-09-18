@@ -104,6 +104,12 @@ body {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.card a {
+    text-decoration: none;   
+    color: inherit;          
+    display: block;          
+}
+
 .card:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 20px rgba(0,0,0,0.12);
@@ -138,6 +144,67 @@ body {
     line-height: 1.6;
     color: #d27b9aff;
 }
+
+body.card-page {
+    background: #ffe6f0; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 50px;
+}
+
+.card-expanded {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    max-width: 800px;
+    width: 100%;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+}
+
+.card-expanded h1 {
+    color: #e380b0;
+    margin-bottom: 0.5rem;
+}
+
+.card-expanded .message {
+    font-family: 'Homemade Apple', cursive;
+    font-size: 1.3rem;
+    color: #d27b9a;
+    margin: 2rem 0;
+    text-align: center;
+}
+
+.card-expanded .from {
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    color: #777;
+    text-align: left;
+}
+
+.card-media {
+    margin-top: 1rem;
+    border-radius: 12px;
+    width: 100%;
+    height: auto;
+}
+
+.back-btn {
+    margin-top: 30px;
+    text-decoration: none;
+    background: #e380b0;
+    color: white;
+    padding: 0.7rem 1.5rem;
+    border-radius: 12px;
+    transition: background 0.2s ease;
+}
+
+.back-btn:hover {
+    background: #d0679a;
+}
+
 .header-section p {
     font-family: 'Homemade Apple', cursive;
     font-size: 1rem;
