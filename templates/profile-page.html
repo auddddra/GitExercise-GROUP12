@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile</title>
+  <link rel="stylesheet" href="static/profile.css">
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+</head>
+<body>
+
+  <div class="profile-header">
+    <i class="fa-solid fa-user user-icon"></i>
+    <h1>My Profile 💌</h1>
+  </div>
+    
+    <div class="profile-card">
+      <h2 id="nickname">Your Nickname</h2>
+      <p id="email">your@email.com</p>
+    </div>
+
+   <!-- editing profile -->
+<div id="editModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn">&times;</span>
+    <h2>Edit Profile</h2>
+    <form id="editForm">
+      <label for="newEmail">Change Email:</label>
+      <input type="email" id="newEmail" name="email" required>
+
+      <label for="confirmEmail">Confirm Email:</label>
+      <input type="email" id="confirmEmail" name="confirmEmail" required>
+
+      <label for="newNickname">Change Nickname:</label>
+      <input type="text" id="newNickname" name="nickname" required>
+
+      <label for="confirmNickname">Confirm Nickname:</label>
+      <input type="text" id="confirmNickname" name="confirmNickname" required>
+
+      <div class="modal-buttons">
+        <button type="submit" class="btn save-btn">Save Changes</button>
+        <button type="button" class="btn cancel-btn">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- delete confirmation modal -->
+<div id="deleteModal" class="modal">
+  <div class="modal-content">
+    <span class="close-delete">&times;</span>
+    <h2>Delete Profile</h2>
+    <p>Are you sure you want to delete your profile? <br>
+       This action cannot be undone ✉️</p>
+
+    <div class="modal-buttons">
+      <button id="confirmDelete" class="btn danger-btn">Yes, Delete</button>
+      <button class="btn cancel-delete">Cancel</button>
+    </div>
+  </div>
+</div>
+
+    <div class="button-group">
+      <button class="btn edit-btn"><i class="fa-solid fa-pen"></i> Edit Profile</button>
+      <button class="btn delete-btn"><i class="fa-solid fa-trash"></i> Delete Profile</button>
+    </div>
+  </div>
+
+<script src="static/profile.js"></script>
+</body>
+</html>

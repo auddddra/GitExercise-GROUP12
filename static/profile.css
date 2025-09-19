@@ -1,0 +1,204 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background-color: #fff0f5; 
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  min-height: 100vh;
+}
+
+/* Profile header */
+.profile-header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 30px;
+}
+
+.user-icon {
+  font-size: 50px;
+  margin-right: 15px;
+  color: #ffffff;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+}
+
+.profile-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+}
+
+/* Profile card */
+.profile-card {
+  background: rgb(255, 211, 235);
+  border-radius: 12px;
+  padding: 25px;
+  text-align: center;
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+}
+
+.profile-card h2 {
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+}
+
+.profile-card p {
+  font-size: 1rem;
+  color: #b3b3b3;
+}
+
+/* Button group */
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px;
+  border: none;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Button styles */
+.edit-btn {
+  background:#a4a4a4 ;
+  color: #fff;
+}
+
+.edit-btn:hover {
+  background:#6c6969 ;
+}
+
+.delete-btn {
+  background: #E6A5A5;
+  color: #fff;
+}
+
+.delete-btn:hover {
+  background: #ff3b4a;
+}
+
+/* edit profile backdrop */
+.modal {
+  display: none; 
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* Modal box */
+.modal-content {
+  background: #dba2a2;
+  padding: 25px;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+  position: relative;
+  color: #fff;
+}
+
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #aaa;
+}
+
+.close-btn:hover {
+  color: #fff;
+}
+
+.close-delete {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #aaa;
+}
+
+.close-delete:hover {
+  color: #fff;
+}
+
+/* Form styling */
+form label {
+  display: block;
+  margin: 12px 0 6px;
+  font-weight: 600;
+}
+
+form input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  background: #ffffff;
+  color: #fff;
+}
+
+form input:focus {
+  border: 1px solid #1db954;
+}
+
+/* Modal buttons */
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.save-btn {
+  background: #fff;
+  color: #282828;
+}
+
+.save-btn:hover {
+  background: #fff;
+}
+
+.cancel-btn {
+  background: #fff;
+  color: #282828;
+}
+
+.cancel-btn:hover {
+  background: #fff;
+}
