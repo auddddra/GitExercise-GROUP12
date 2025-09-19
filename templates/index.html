@@ -2,7 +2,12 @@
 {% block body %}
     <div class="header-section">
     <h1>Museum of Hearts</h1>
-    <input type="text" placeholder="Search..">
+    
+    <form method="get" action="{{ url_for('index') }}" class="search-form">
+        <input type="text" name="q" placeholder="Search by To or From" value="{{ search_query }}">
+        <button type="submit">Search</button>
+    </form>
+
     <a href="{{ url_for('admin_dashboard') }}" class="btn-outline">💌 admin</a>
     <a href="{{ url_for('create') }}" class="btn-outline">💌 Tell us your story</a>
     </div>

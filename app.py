@@ -3,6 +3,7 @@ import os
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from werkzeug.utils import secure_filename
+from difflib import SequenceMatcher
 
 # ---------- Config ----------
 UPLOAD_FOLDER = "static/uploads"
@@ -49,10 +50,32 @@ class Photo(db.Model):
 
 
 # ---------------- Routes ---------------- #
-@app.route("/")
+@app.route("/", methods=["GET"])
 def index():
-    cards = Card.query.filter_by(status="approved").order_by(Card.created.desc()).all()
-    return render_template("index.html", cards=cards)
+    search_query = request.args.get("q", "").strip()
+
+    cards = Card.query.filter_by(status="approved").all()
+
+    if search_query:
+  
+        filtered_cards = [
+            card for card in cards
+            if search_query.lower() in card.to_name.lower() or
+               (card.from_name and search_query.lower() in card.from_name.lower())
+        ]
+
+        def similarity(card):
+            to_similarity = SequenceMatcher(None, search_query.lower(), card.to_name.lower()).ratio()
+            from_similarity = SequenceMatcher(None, search_query.lower(), (card.from_name or "").lower()).ratio()
+            return max(to_similarity, from_similarity)  
+
+        cards = sorted(filtered_cards, key=similarity, reverse=True)
+        
+    else:
+        cards = sorted(cards, key=lambda c: c.created, reverse=True)
+
+    return render_template("index.html", cards=cards, search_query=search_query)
+
 
 
 @app.route("/create", methods=["GET", "POST"])
