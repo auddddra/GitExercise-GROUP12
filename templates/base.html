@@ -16,8 +16,6 @@
     {% endblock %}
     
     <footer>
-        {% block footer %}
-        {% endblock %}
         {% if request.endpoint != 'index' %}
             <div class="footer-home">
                 <a href="{{ url_for('index')}}" target="_self">HOME</a>
@@ -26,6 +24,8 @@
         <div class="footer-rights">
             <p>2025 all rights reserved</p>
         </div>
+        {% block footer %}
+        {% endblock %}
     </footer>
 </body>
 </html>

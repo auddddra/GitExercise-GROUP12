@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="form-container">
+    <h2>Edit Card</h2>
+    <form method="post" action="{{ url_for('edit_card', card_id=card.id) }}">
+        <label for="to_name">To:</label>
+        <input type="text" id="to_name" name="to_name" value="{{ card.to_name }}" required><br><br>
+
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" value="{{ card.location }}"><br><br>
+
+        <label for="message">Message:</label><br>
+        <textarea id="message" name="message" rows="5" cols="40" required>{{ card.message }}</textarea><br><br>
+
+        <label for="video">Video URL (optional):</label>
+        <input type="url" id="video" name="video" value="{{ card.video }}"><br><br>
+
+        <label for="from_name">From:</label>
+        <input type="text" id="from_name" name="from_name" value="{{ card.from_name }}"><br><br>
+
+        <!-- Keep existing lat/lng so marker isn’t lost -->
+        <input type="hidden" name="lat" value="{{ card.lat }}">
+        <input type="hidden" name="lng" value="{{ card.lng }}">
+
+        <button type="submit">Save Changes</button>
+    </form>
+</div>
+{% endblock %}

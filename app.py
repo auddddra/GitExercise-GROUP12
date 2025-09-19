@@ -10,11 +10,12 @@ ALLOWED_IMAGE_EXT = {"png", "jpg", "jpeg", "gif", "webp"}
 ALLOWED_VIDEO_EXT = {"mp4", "webm", "ogg", "mov"}
 
 app = Flask(__name__)
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pins.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
-my_secret_key = "i love horses"
+app.secret_key = "i love horses" 
 
 db = SQLAlchemy(app)
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -33,8 +34,11 @@ class Card(db.Model):
     video = db.Column(db.String(200), nullable=True)  # stores "uploads/filename.ext"
     from_name = db.Column(db.String(50), nullable=True)
     created = db.Column(db.DateTime, default=datetime.utcnow)
+
     lat = db.Column(db.Float, nullable=True)
     lng = db.Column(db.Float, nullable=True)
+
+    status = db.Column(db.String(20), default="pending")  # 4 stypes: pending, approved, rejected, archived
 
 
 class Photo(db.Model):
@@ -47,7 +51,7 @@ class Photo(db.Model):
 # ---------------- Routes ---------------- #
 @app.route("/")
 def index():
-    cards = Card.query.order_by(Card.created.desc()).all()
+    cards = Card.query.filter_by(status="approved").order_by(Card.created.desc()).all()
     return render_template("index.html", cards=cards)
 
 
@@ -71,8 +75,11 @@ def create():
                 location=location,
                 message=message,
                 from_name=from_name,
+
                 lat=float(lat) if lat else None,
-                lng=float(lng) if lng else None
+                lng=float(lng) if lng else None,
+
+                status="pending" 
             )
             db.session.add(new_card)
             db.session.flush() 
@@ -163,6 +170,74 @@ def api_card(card_id):
         "video": c.video,
         "from_name": c.from_name
     })
+
+
+# admin section
+
+@app.route("/admin")
+def admin_dashboard():
+    pending = Card.query.filter_by(status="pending").all()
+    approved = Card.query.filter_by(status="approved").all()
+    rejected = Card.query.filter_by(status="rejected").all()
+    archived = Card.query.filter_by(status="archived").all()
+
+    return render_template("admin.html", pending=pending, approved=approved, rejected=rejected, archived=archived)
+
+@app.route("/admin/card/<int:card_id>/approve", methods=["POST"])
+def approve_card(card_id):
+    card = Card.query.get_or_404(card_id)
+    card.status = "approved"
+    db.session.commit()
+    return redirect(url_for("admin_dashboard"))
+
+@app.route("/admin/card/<int:card_id>/reject", methods=["POST"])
+def reject_card(card_id):
+    card = Card.query.get_or_404(card_id)
+    card.status = "rejected"
+    db.session.commit()
+    return redirect(url_for("admin_dashboard"))
+
+@app.route("/admin/card/<int:card_id>/archive", methods=["POST"])
+def archive_card(card_id):
+    card = Card.query.get_or_404(card_id)
+    card.status = "archived"
+    db.session.commit()
+    return redirect(url_for("admin_dashboard"))
+
+@app.route("/delete/<int:card_id>", methods=["POST"])
+def delete_card(card_id):
+    card = Card.query.get_or_404(card_id)
+    card.status = "archived" 
+    db.session.commit()
+    return redirect(url_for("admin_dashboard"))
+
+
+
+@app.route("/edit/<int:card_id>", methods=["GET", "POST"])
+def edit_card(card_id):
+    card = Card.query.get_or_404(card_id)
+
+    if request.method == "POST":
+        card.to_name = request.form["to_name"]
+        card.location = request.form["location"]
+        card.message = request.form["message"]
+        card.video = request.form["video"]
+        card.from_name = request.form["from_name"]
+
+        card.lat = request.form["lat"]
+        card.lng = request.form["lng"]
+
+        card.status = "approved"
+
+        db.session.commit()
+
+        flash("Card updated successfully!", "success")
+        return redirect(url_for("admin_dashboard"))
+
+    return render_template("edit.html", card=card)
+
+
+
 
 
 # ---------- Run ----------

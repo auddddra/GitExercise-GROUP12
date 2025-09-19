@@ -1,108 +1,110 @@
 {% extends "base.html" %}
 {% block body %}
-<div class="header-section">
-  <h1>Museum of Hearts</h1>
-  <a href="{{ url_for('create') }}" class="btn-outline">💌 Tell us your story</a>
-</div>
+    <div class="header-section">
+    <h1>Museum of Hearts</h1>
+    <input type="text" placeholder="Search..">
+    <a href="{{ url_for('admin_dashboard') }}" class="btn-outline">💌 admin</a>
+    <a href="{{ url_for('create') }}" class="btn-outline">💌 Tell us your story</a>
+    </div>
 
-<div id="map" style="height:480px; border-radius:12px; overflow:hidden;"></div>
+    <div id="map" style="height:480px; border-radius:12px; overflow:hidden;"></div>
 
-<script>
-    const map = L.map('map').setView([2.9273, 101.6415], 15);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
-
-    const bounds = L.latLngBounds(
-        [2.9230, 101.6360], 
-        [2.9310, 101.6460]  
-        );
-        map.setMaxBounds(bounds);
-        map.on('drag', function() {
-        map.panInsideBounds(bounds, { animate: false });
-    });
-
-    var markers = {};
-
-    function makeMarker(card) {
-        var marker = L.circleMarker([card.lat, card.lng], {
-        radius: 6,
-        fillColor: '#e380b0',
-        color: '#e380b0',
-        fillOpacity: 0.9,
-        weight: 0
+    <script>
+        const map = L.map('map').setView([2.9273, 101.6415], 15);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
         }).addTo(map);
 
-        var snippet = `<div style="min-width:220px">
-            <strong>To: ${card.to_name}</strong><br>
-            <small>${card.location}</small><p style="margin:6px 0;">${card.message.slice(0,120)}${card.message.length>120?'…':''}</p>
-            <div style="text-align:right;"><a href="/card/${card.id}">View full memory →</a></div>
-        </div>`;
-
-        marker.bindPopup(snippet);
-        return marker;
-    }
-
-    fetch("/api/cards")
-        .then(r => r.json())
-        .then(data => {
-        data.forEach(card => {
-            markers[card.id] = makeMarker(card);
-        });
+        const bounds = L.latLngBounds(
+            [2.9230, 101.6360], 
+            [2.9310, 101.6460]  
+            );
+            map.setMaxBounds(bounds);
+            map.on('drag', function() {
+            map.panInsideBounds(bounds, { animate: false });
         });
 
-    map.on('contextmenu', function(e) {
-        var lat = e.latlng.lat.toFixed(6);
-        var lng = e.latlng.lng.toFixed(6);
-        var html = `<a href="/create?lat=${lat}&lng=${lng}" style="text-decoration:none;color:#e380b0;font-weight:600;">💌 Leave a memory here</a>`;
-        L.popup({ closeButton: true })
-        .setLatLng(e.latlng)
-        .setContent(html)
-        .openOn(map);
+        var markers = {};
+
+        function makeMarker(card) {
+            var marker = L.circleMarker([card.lat, card.lng], {
+            radius: 6,
+            fillColor: '#e380b0',
+            color: '#e380b0',
+            fillOpacity: 0.9,
+            weight: 0
+            }).addTo(map);
+
+            var snippet = `<div style="min-width:220px">
+                <strong>To: ${card.to_name}</strong><br>
+                <small>${card.location}</small><p style="margin:6px 0;">${card.message.slice(0,120)}${card.message.length>120?'…':''}</p>
+                <div style="text-align:right;"><a href="/card/${card.id}">View full memory →</a></div>
+            </div>`;
+
+            marker.bindPopup(snippet);
+            return marker;
+        }
+
+        fetch("/api/cards")
+            .then(r => r.json())
+            .then(data => {
+            data.forEach(card => {
+                markers[card.id] = makeMarker(card);
+            });
+            });
+
+        map.on('contextmenu', function(e) {
+            var lat = e.latlng.lat.toFixed(6);
+            var lng = e.latlng.lng.toFixed(6);
+            var html = `<a href="/create?lat=${lat}&lng=${lng}" style="text-decoration:none;color:#e380b0;font-weight:600;">💌 Leave a memory here</a>`;
+            L.popup({ closeButton: true })
+            .setLatLng(e.latlng)
+            .setContent(html)
+            .openOn(map);
+        });
+
+        window._mapMarkers = markers; 
+    </script>
+
+    <!-- Gallery -->
+    <div class="gallery">
+    {% for card in cards %}
+        <div class="card" data-card-id="{{ card.id }}" data-lat="{{ card.lat }}" data-lng="{{ card.lng }}">
+            <a href="{{ url_for('view_card', card_id=card.id) }}">
+            <h3>To: {{ card.to_name }}</h3>
+            <h4 class="location">{{ card.location }}</h4>
+            <p class="message">{{ card.message }}</p>
+            {% set attachments = card.photos|length + (1 if card.video else 0) %}
+            {% if attachments > 0 %}
+                <p class="attachments">{{ attachments }} attachments</p>
+            {% endif %}
+            </a>
+        </div>
+    {% endfor %}
+    </div>
+
+    <script>
+    document.querySelectorAll('.card[data-card-id]').forEach(el => {
+        var id = el.getAttribute('data-card-id');
+            el.addEventListener('mouseenter', function(){
+                var m = window._mapMarkers[id];
+                if (m && typeof m.setRadius === 'function') {
+                    m.setRadius(12);
+                } else if (m && m.setStyle) {
+                    m.setStyle({ radius: 12 });
+                }
+            });
+
+            el.addEventListener('mouseleave', function(){
+                var m = window._mapMarkers[id];
+                if (m && typeof m.setRadius === 'function') {
+                    m.setRadius(6);
+                } else if (m && m.setStyle) {
+                    m.setStyle({ radius: 6 });
+                }
+            });
     });
-
-    window._mapMarkers = markers; 
-</script>
-
-<!-- Gallery -->
-<div class="gallery">
-  {% for card in cards %}
-  <div class="card" data-card-id="{{ card.id }}" data-lat="{{ card.lat }}" data-lng="{{ card.lng }}">
-    <a href="{{ url_for('view_card', card_id=card.id) }}">
-      <h3>To: {{ card.to_name }}</h3>
-      <h4 class="location">{{ card.location }}</h4>
-      <p class="message">{{ card.message }}</p>
-      {% set attachments = card.photos|length + (1 if card.video else 0) %}
-      {% if attachments > 0 %}
-        <p class="attachments">{{ attachments }} attachments</p>
-      {% endif %}
-    </a>
-  </div>
-  {% endfor %}
-</div>
-
-<script>
-document.querySelectorAll('.card[data-card-id]').forEach(el => {
-    var id = el.getAttribute('data-card-id');
-        el.addEventListener('mouseenter', function(){
-            var m = window._mapMarkers[id];
-            if (m && typeof m.setRadius === 'function') {
-                m.setRadius(12);
-            } else if (m && m.setStyle) {
-                m.setStyle({ radius: 12 });
-            }
-        });
-
-        el.addEventListener('mouseleave', function(){
-            var m = window._mapMarkers[id];
-            if (m && typeof m.setRadius === 'function') {
-                m.setRadius(6);
-            } else if (m && m.setStyle) {
-                m.setStyle({ radius: 6 });
-            }
-        });
-});
-</script>
+    </script>
 
 {% endblock %}

@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block body %}
+<h1 class="text-center">Admin Dashboard</h1>
+
+<div id="map"></div>
+
+<div class="dashboard">
+
+    <div class="section">
+        <h2>Pending Cards</h2>
+        {% for card in pending %}
+        <div class="card">
+            <p><b>To:</b> {{ card.to_name }}</p>
+            <p><b>Message:</b> {{ card.message }}</p>
+
+            <form action="{{ url_for('approve_card', card_id=card.id) }}" method="post" style="display:inline;">
+                <button type="submit">Approve</button>
+            </form>
+
+            <form action="{{ url_for('reject_card', card_id=card.id) }}" method="post" style="display:inline;">
+                <button type="submit">Reject</button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="section">
+        <h2>Approved Cards</h2>
+        {% for card in approved %}
+            <div class="card">
+                <p><b>To:</b> {{ card.to_name }}</p>
+                <p><b>Message:</b> {{ card.message }}</p>
+
+                <form action="{{ url_for('archive_card', card_id=card.id) }}" method="post" style="display:inline;">
+                    <button type="submit">Archive</button>
+                </form>
+
+                <form action="{{ url_for('edit_card', card_id=card.id) }}" method="get" style="display:inline;">
+                    <button type="submit">Edit</button>
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="section">
+        <h2>Rejected Cards</h2>
+        {% for card in rejected %}
+        <div class="card">
+            <p><b>To:</b> {{ card.to_name }}</p>
+            <p><b>Message:</b> {{ card.message }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Archived -->
+    <div class="section">
+        <h2>Archived Cards</h2>
+        {% for card in archived %}
+        <div class="card">
+            <p><b>To:</b> {{ card.to_name }}</p>
+            <p><b>Message:</b> {{ card.message }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+    
+    const map = L.map('map').setView([2.9264, 101.6411], 16); // MMU
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+    }).addTo(map);
+
+    function addMarkers(cards, color) {
+        cards.forEach(card => {
+            if (card.lat && card.lng) {
+                const marker = L.circleMarker([card.lat, card.lng], {
+                    color: color,
+                    radius: 8,
+                    fillOpacity: 0.9
+                }).addTo(map);
+
+                marker.bindPopup(`<b>${card.to_name}</b><br>${card.message}`);
+            }
+        });
+    }
+
+    const pendingCards = { pending,tojson };
+    const approvedCards = { approved,tojson };
+    const rejectedCards = { rejected,tojson };
+    const archivedCards = { archived,tojson };
+
+    addMarkers(pendingCards, "yellow");
+    addMarkers(approvedCards, "pink");
+    addMarkers(rejectedCards, "red");
+    addMarkers(archivedCards, "blue");
+
+    function approveCard(id) { alert("Approved card " + id); }
+    function rejectCard(id) { alert("Rejected card " + id); }
+    function editCard(id) { alert("Edit card " + id); }
+    function deleteCard(id) { alert("Deleted card " + id); }
+</script>
+
+<style>
+    #map { height: 400px; width: 100%; }
+    .dashboard {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        padding: 20px;
+    }
+    .section {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 15px;
+        background: #f9f9f9;
+    }
+    .card {
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 6px;
+        background: white;
+    }
+    .card button { margin: 5px 5px 0 0; }
+</style>
+{% endblock %}
