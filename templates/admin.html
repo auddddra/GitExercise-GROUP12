@@ -3,6 +3,10 @@
 {% block body %}
 <h1 class="text-center">Admin Dashboard</h1>
 
+<div class="back-btn-container">
+            <a href="{{ url_for('index') }}" class="back-btn">← Back to Gallery</a>
+        </div>
+        
 <div id="map"></div>
 
 <div class="dashboard">
@@ -128,3 +132,5 @@
     .card button { margin: 5px 5px 0 0; }
 </style>
 {% endblock %}
+
+

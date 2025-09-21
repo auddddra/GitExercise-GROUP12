@@ -1,16 +1,27 @@
+
 <!doctype html>
 <html>
 <head>
     <meta charset="utf-8">
     <title>Memory — {{ card.to_name }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Homemade+Apple&display=swap" rel="stylesheet">
 </head>
 <body class="card-page">
     <div class="card-expanded">
-        <h1>To: {{ card.to_name }}</h1>
-        <p class="location">Location: {{ card.location }}</p>
-        <div class="message">"{{ card.message }}"</div>
 
+        <!-- Header -->
+        <div class="card-header">
+            <h1>To: {{ card.to_name }}</h1>
+            <p class="location">Location: {{ card.location }}</p>
+        </div>
+
+        <!-- Message -->
+        <div class="card-message">
+            {{ card.message }}
+        </div>
+
+        <!-- Photos -->
         {% if card.photos %}
             <div class="photo-strip">
             {% for p in card.photos %}
@@ -19,21 +30,38 @@
             </div>
         {% endif %}
 
+        <!-- Video -->
         {% if card.video %}
-            <div class="video-player" style="margin-top:1rem;">
-            <video controls style="width:100%; border-radius:12px;">
-                <source src="{{ url_for('static', filename=card.video) }}" type="video/mp4">
-            </video>
+            <div class="video-player">
+                <video controls>
+                    <source src="{{ url_for('static', filename=card.video) }}" type="video/mp4">
+                </video>
             </div>
         {% endif %}
 
-        {% if card.from_name %}
-            <div class="from">From: {{ card.from_name }}</div>
+        <!-- Spotify Song -->
+        {% if card.song %}
+            <div class="song-card">
+                <p class="song-label">💌</p>
+                <iframe 
+                   src="https://open.spotify.com/embed/track/{{ card.song.split('/')[-1] }}" 
+                   width="100%" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media">
+                </iframe>
+            </div>
         {% endif %}
-    </div>
 
-    <div style="text-align:center; margin-top:24px;">
-        <a href="{{ url_for('index') }}" class="back-btn">← Back to Gallery</a>
+        <!-- Footer -->
+        <div class="card-footer">
+            {% if card.from_name %}
+                <p class="from">From: {{ card.from_name }}</p>
+            {% endif %}
+            <p class="date">Posted on: {{ card.created.strftime('%d %b %Y, %H:%M') }}</p>
+        </div>
+
+        <div class="back-btn-container">
+            <a href="{{ url_for('index') }}" class="back-btn">← Back to Gallery</a>
+        </div>
+
     </div>
 </body>
 </html>

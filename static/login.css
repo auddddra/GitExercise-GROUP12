@@ -1,0 +1,196 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* {
+    font-family: "Poppins", sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    list-style: none;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(90deg, #fff0f5, #FFE8F2);
+}
+
+.container {
+    position: relative;
+    width: 850px;
+    height: 550px;
+    background: #fff;
+    margin: 20px;
+    border-radius: 30px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    display: flex;
+}
+
+/* Left welcome panel (always visible) */
+.toggle-panel.toggle-left {
+    position: relative;
+    flex: 1;
+    background: rgb(255, 211, 235);
+    color: #fff;
+    border-radius: 30px 0 0 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+}
+
+/* Right form container */
+.form-container {
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Both forms sit in the right half */
+.form-box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    transition: transform 0.6s ease-in-out, opacity 0.6s ease-in-out;
+}
+
+/* Login shown by default */
+.form-box.login {
+    transform: translateX(0);
+    opacity: 1;
+    z-index: 2;
+}
+
+/* Register hidden to the right */
+.form-box.register {
+    transform: translateX(100%);
+    opacity: 0;
+    z-index: 1;
+}
+
+/* Forgot form hidden by default (to the right) */
+.form-box.forgot {
+    transform: translateX(100%);
+    opacity: 0;
+    z-index: 1;
+}
+
+/* Show forgot form when active */
+.container.forgot-active .form-box.login,
+.container.forgot-active .form-box.register {
+    transform: translateX(-100%);
+    opacity: 0;
+    z-index: 1;
+}
+
+.container.forgot-active .form-box.forgot {
+    transform: translateX(0);
+    opacity: 1;
+    z-index: 2;
+}
+
+/* When active → hide login, show register */
+.container.active .form-box.login {
+    transform: translateX(-100%);
+    opacity: 0;
+    z-index: 1;
+}
+
+.container.active .form-box.register {
+    transform: translateX(0);
+    opacity: 1;
+    z-index: 2;
+}
+
+/* Inputs */
+.input-box {
+    position: relative;
+    margin: 20px 0;
+    width: 100%;
+}
+
+.input-box input {
+    width: 100%;
+    padding: 13px 50px 13px 20px;
+    background: #eee;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: #333;
+    font-weight: 500;
+}
+
+.input-box i {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+}
+
+.btn {
+    width: 100%;
+    height: 48px;
+    background: rgb(255, 211, 235);
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #fff;
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+/* Smaller toggle button inside welcome panel */
+.toggle-panel .btn {
+    width: 160px;
+    height: 46px;
+    background: transparent;
+    border: 2px solid #fff;
+}
+
+.google-btn {
+    width: 100%;
+    height: 48px;
+    background: #fff;
+    border-radius: 8px;
+    border: 2px solid rgb(255, 211, 235);
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    color: #ff69b4;     
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 12px;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 6px rgba(255, 105, 180, 0.2);
+}
+
+.google-btn img {
+    width: 20px;
+    height: 20px;
+}
+
+.google-btn:hover {
+    background: rgb(255, 211, 235);
+    color: #fff;
+    box-shadow: 0 0 12px rgba(255, 105, 180, 0.5);
+}
+
+
+
