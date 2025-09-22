@@ -214,13 +214,30 @@ def contacts():
     return render_template("contacts.html")
 
 # ---------------- Admin Routes ---------------- #
+def serialize_card(card):
+    return {
+        "id": card.id,
+        "to_name": card.to_name,
+        "message": card.message,
+        "lat": card.lat,
+        "lng": card.lng,
+        "location": card.location
+    }
+
 @app.route("/admin")
 def admin_dashboard():
     pending = Card.query.filter_by(status="pending").all()
     approved = Card.query.filter_by(status="approved").all()
     rejected = Card.query.filter_by(status="rejected").all()
     archived = Card.query.filter_by(status="archived").all()
-    return render_template("admin.html", pending=pending, approved=approved, rejected=rejected, archived=archived)
+
+    return render_template(
+        "admin.html",
+        pending=[serialize_card(c) for c in pending],
+        approved=[serialize_card(c) for c in approved],
+        rejected=[serialize_card(c) for c in rejected],
+        archived=[serialize_card(c) for c in archived]
+    )
 
 @app.route("/admin/card/<int:card_id>/approve", methods=["POST"])
 def approve_card(card_id):

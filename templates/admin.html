@@ -92,20 +92,29 @@
         });
     }
 
-    const pendingCards = { pending,tojson };
-    const approvedCards = { approved,tojson };
-    const rejectedCards = { rejected,tojson };
-    const archivedCards = { archived,tojson };
+    const pendingCards = {{ pending|tojson }};
+    const approvedCards = {{ approved|tojson }};
+    const rejectedCards = {{ rejected|tojson }};
+    const archivedCards = {{ archived|tojson }};
+
+    function addMarkers(cards, color) {
+        cards.forEach(card => {
+            if (card.lat && card.lng) {
+                const marker = L.circleMarker([card.lat, card.lng], {
+                    color: color,
+                    radius: 8,
+                    fillOpacity: 0.9
+                }).addTo(map);
+
+                marker.bindPopup(`<b>${card.to_name}</b><br>${card.message}`);
+            }
+        });
+    }
 
     addMarkers(pendingCards, "yellow");
     addMarkers(approvedCards, "pink");
     addMarkers(rejectedCards, "red");
     addMarkers(archivedCards, "blue");
-
-    function approveCard(id) { alert("Approved card " + id); }
-    function rejectCard(id) { alert("Rejected card " + id); }
-    function editCard(id) { alert("Edit card " + id); }
-    function deleteCard(id) { alert("Deleted card " + id); }
 </script>
 
 <style>

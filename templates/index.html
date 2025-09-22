@@ -20,7 +20,7 @@
     </div>
 </div>
 
-<div id="map" style="height: 500px; margin-bottom: 2rem;"></div>
+<div id="map"></div>
 
 <div class="gallery">
     {% if not search_query %}
@@ -78,14 +78,28 @@
 <script>
     // Initialize map
     const map = L.map('map').setView([2.9273, 101.6415], 15);
+
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '© OpenStreetMap contributors'
+    maxZoom: 19,
+    minZoom: 15, // optional: keep users zoomed in close to MMU
+    attribution: '© OpenStreetMap contributors'
     }).addTo(map);
 
-    const bounds = L.latLngBounds([2.9230, 101.6360], [2.9310, 101.6460]);
+    // Define bounds
+    const bounds = L.latLngBounds(
+    [2.9230, 101.6360], // Southwest corner
+    [2.9310, 101.6460]  // Northeast corner
+    );
+
+    // Lock map to bounds
     map.setMaxBounds(bounds);
-    map.on('drag', () => map.panInsideBounds(bounds, { animate: false }));
+
+    // Small trick: when the map first loads, this prevents users 
+    // from dragging it out before the restriction kicks in
+    map.on('drag', function () {
+    map.panInsideBounds(bounds, { animate: false });
+    });
+
 
     // Map cards passed from Flask
     const mapCards = {{ map_cards|tojson }};

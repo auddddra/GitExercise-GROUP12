@@ -12,12 +12,14 @@
         <label for="location">Location:</label>
         <input type="text" id="location" name="location" placeholder="e.g. FCM Cinema" required>
 
-        <label for="message">Message:</label>
-        <textarea id="message" name="message" rows="5" placeholder="What would you like them to know?..." required></textarea>
-
         <!-- Hidden latitude & longitude -->
         <input type="hidden" name="lat" id="lat" value="{{ pre_lat or '' }}">
         <input type="hidden" name="lng" id="lng" value="{{ pre_lng or '' }}">
+
+        <div id="map" style="height: 300px; margin-top: 10px;"></div>
+
+        <label for="message">Message:</label>
+        <textarea id="message" name="message" rows="5" placeholder="What would you like them to know?..." required></textarea>
 
         <!-- Spotify Song Search -->
         <label for="songSearch">Search for a Spotify Song (Required):</label>
@@ -43,7 +45,66 @@
     </form>
 </div>
 
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 <script>
+
+    // Initialize map
+    const map = L.map('map').setView([2.9273, 101.6415], 15);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    minZoom: 15, // optional: keep users zoomed in close to MMU
+    attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Define bounds
+    const bounds = L.latLngBounds(
+    [2.9230, 101.6360], // Southwest corner
+    [2.9310, 101.6460]  // Northeast corner
+    );
+
+    // Lock map to bounds
+    map.setMaxBounds(bounds);
+
+    // Small trick: when the map first loads, this prevents users 
+    // from dragging it out before the restriction kicks in
+    map.on('drag', function () {
+    map.panInsideBounds(bounds, { animate: false });
+    });
+
+
+    var marker;
+
+    // On map click: add marker, update lat/lng, and fetch location name
+    map.on('click', function(e) {
+        var lat = e.latlng.lat;
+        var lng = e.latlng.lng;
+
+        // Place or move marker
+        if (marker) {
+            marker.setLatLng(e.latlng);
+        } else {
+            marker = L.marker(e.latlng).addTo(map);
+        }
+
+        // Update hidden fields
+        document.getElementById('lat').value = lat;
+        document.getElementById('lng').value = lng;
+
+        // Reverse geocoding using Nominatim
+        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`)
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.display_name) {
+                    document.getElementById('location').value = data.display_name;
+                }
+            })
+            .catch(err => console.log(err));
+    });
+
     // Display coordinates if pre-filled
     if (document.getElementById('lat').value && document.getElementById('lng').value) {
         const lat = document.getElementById('lat').value;
@@ -52,6 +113,7 @@
         el.innerHTML = `<small>Memory will be placed at: <strong>${lat}, ${lng}</strong></small>`;
         document.querySelector('.form-section').insertBefore(el, document.querySelector('.form-section').children[1]);
     }
+
 
     // Spotify search
     async function searchSong() {
