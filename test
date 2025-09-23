@@ -1,0 +1,85 @@
+<!--inherits from base.html-->
+{% extends "base.html" %}
+
+
+<!--head-->
+{% block head %}
+<title>MMU Museum of Hearts</title>
+{% endblock %}
+ 
+
+
+<!--body-->
+{% block body %}
+<a href="" target="_self">Tell us your story</a>
+<a href="{{ url_for('search')}}" target="_self">Browse stories here</a>
+
+<div class="map">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <div id="map" style="height: 400px; width: 50%;"></div>
+
+    <script>
+  
+        var map = L.map('map', {
+            crs: L.CRS.Simple,
+            minZoom: -2  // allows zooming out further
+        }); 
+
+        var imageWidth = 2000, imageHeight = 1500; 
+        var bounds = [[0,0], [imageHeight, imageWidth]]; 
+
+        L.imageOverlay('mmu_map.JPG', bounds).addTo(map);L.imageOverlay('{{ url_for("static", filename="mmu_map.JPG") }}', bounds).addTo(map);
+
+        map.fitBounds(bounds);
+
+        // 5. Add a fixed marker with a popup
+        L.marker([500, 800]).addTo(map)
+            .bindPopup("<b>Main Library</b><br>This is the library.");
+
+        // 6. Let users place their own marker when they click
+        map.on('contextmenu', function(e) {
+
+            var lat = e.latlng.lat;
+            var lng = e.latlng.lng;
+            var popupContent = `
+                <button onclick="window.location.href='/message?lat=${lat}&lng=${lng}'">
+                    Add a message
+                </button>
+            `;
+
+            var tempMarker = L.marker(e.latlng).addTo(map)
+                .bindPopup(popupContent)
+                .openPopup();
+
+            tempMarker.on('popupclose', function() {
+                map.removeLayer(tempMarker);
+            });
+        });
+
+        
+        {% for pin in pins %}
+        L.marker([{{ pin.lat }}, {{ pin.lng }}]).addTo(map)
+            .bindPopup("<b>{{ pin.place_name|e }}</b><br>{{ pin.message|e }}");
+        {% endfor %}
+
+</script>
+
+
+
+</div>
+
+<div class="cards">
+    <p>here will be the cards</p>
+</div>
+
+
+{% endblock %}
+
+
+
+
+<!--footer-->
+{% block footer %}
+<a href="{{ url_for('contacts')}}" target="_self">Contact us for help</a>
+{% endblock %}
