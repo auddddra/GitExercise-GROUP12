@@ -55,9 +55,9 @@ def google_login():
     return redirect(url_for("profile"))
 
 # normal auth routes
-# @app.route("/")
-# def home():
-#     return render_template("login.html")  # combined login/register HTML
+@app.route("/")
+def home():
+    return render_template("login.html")  # combined login/register HTML
 
 @app.route("/register", methods=["POST"])
 def register():
@@ -107,5 +107,5 @@ def logout():
     return redirect(url_for("home"))
 
 # Run App
-    if __name__ == "__main__":
-     app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True)
