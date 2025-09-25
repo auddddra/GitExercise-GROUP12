@@ -202,3 +202,51 @@ form input:focus {
 .cancel-btn:hover {
   background: #fff;
 }
+
+
+/* Footer */
+.footer {
+    text-align: center;      
+    padding: 1rem 0;         
+    background-color: #fff0f5;
+}
+
+.footer a {
+    font-family: 'Poppins', sans-serif;
+    color: #db8fb6;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.footer a:hover {
+    color: #b5657d;  
+}
+footer {
+    background-color: #fff0f5; 
+    padding: 1rem 0;
+}
+
+.footer-rights {
+    text-align: center;      
+    font-family: 'Poppins', sans-serif;
+    color: #85757dff;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-top: 0.5rem;
+}
+
+.footer-home {
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.footer-home a {
+    text-decoration: none;
+    color: #db8fb6;
+    font-weight: 500;
+}
+
+.footer-home a:hover {
+    text-decoration: underline;
+} 

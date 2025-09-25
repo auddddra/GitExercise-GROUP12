@@ -3,7 +3,16 @@
 
 <!-- top login/register button above header -->
 <div class="user-button">
-    <a href="login.html">Log In / Sign up</a>
+    {% if session.get("user_id") %}
+    <!-- show profile button when logged in -->
+    <a href="{{ url_for('profile') }}" class="btn">
+        👤 {{ session.get("username", "Profile") }}
+    </a>
+    <a href="{{ url_for('logout') }}" class="btn">Logout</a>
+  {% else %}
+    <!-- show login button if not logged in -->
+    <a href="{{ url_for('login') }}" class="btn">Login/Register</a>
+  {% endif %}
 </div>
 
 <div class="header-section">
