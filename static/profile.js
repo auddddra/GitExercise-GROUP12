@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const cancelBtn = document.querySelector(".cancel-btn");
 
   // Open modal
-   editBtn.addEventListener("click", () => {
+  editBtn.addEventListener("click", () => {
     modal.style.display = "flex";
   });
 
@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
       modal.style.display = "none";
     }
   });
+});
 
   // Form validation
   form.addEventListener("submit", (e) => {
