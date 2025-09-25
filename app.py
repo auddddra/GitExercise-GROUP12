@@ -101,6 +101,21 @@ def profile():
     user = User.query.get(session["user_id"])
     return render_template("profile-page.html", user=user)
 
+@app.route("/update_username", methods=["POST"])
+def update_username():
+    new_username = request.form.get("nickname")
+     if not new_username.strip():
+        flash("❌ Username cannot be empty.", "danger")
+        return redirect(url_for("profile"))
+    
+    user = User.query.get(session["user_id"])
+    user.username = new_username
+    db.session.commit()
+
+    session["username"] = new_username  # update session
+    flash("✅ Username updated!", "success")
+    return redirect(url_for("profile"))
+
 @app.route("/logout")
 def logout():
     session.clear()
