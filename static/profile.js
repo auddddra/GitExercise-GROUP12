@@ -3,11 +3,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const modal = document.getElementById("editModal");
   const closeBtn = document.querySelector(".close-btn");
   const cancelBtn = document.querySelector(".cancel-btn");
-  const form = document.getElementById("editForm");
 
   // Open modal
-  editBtn.addEventListener("click", () => {
-    console.log("🎉 Edit button clicked!");
+   editBtn.addEventListener("click", () => {
     modal.style.display = "flex";
   });
 
