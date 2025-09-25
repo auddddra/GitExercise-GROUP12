@@ -81,9 +81,3 @@ window.addEventListener("click", (e) => {
   }
 });
 
-// Confirm delete → redirect
-confirmDelete.addEventListener("click", () => {
-  alert("Profile deleted 💔 Redirecting to login...");
-  window.location.href = "login.html"; 
-});
-
