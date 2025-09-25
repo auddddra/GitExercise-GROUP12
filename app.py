@@ -243,7 +243,10 @@ def profile():
     if "user_id" not in session:
         flash("⚠️ Please log in first.", "warning")
         return redirect(url_for("login"))
-    return render_template("profile-page.html", username=session.get("username"))
+    
+    user = User.query.get(session["user_id"])
+    return render_template("profile-page.html", username=session.get("username"), user=user)
+
 
 @app.route("/logout")
 def logout():
