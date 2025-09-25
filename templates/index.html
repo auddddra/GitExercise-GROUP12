@@ -25,9 +25,10 @@
             <button type="submit">Search</button>
         </form>
 
-        {% if (current_user and current_user.is_admin) or session.get('is_admin_temp') %}
+        {% if session.get('is_admin_temp') or (current_user and current_user.is_admin) %}
             <a href="{{ url_for('admin_dashboard') }}" class="btn-outline">💌 Admin</a>
         {% endif %}
+
 
         <a href="{{ url_for('create') }}" class="btn-outline">💌 Tell us your story</a>
     </div>

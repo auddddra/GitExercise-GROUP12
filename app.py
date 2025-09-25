@@ -363,7 +363,6 @@ def serialize_card(card):
 
 @app.route("/admin")
 def admin_dashboard():
-
     if "user_id" not in session:
         flash("⚠️ Please log in first.", "warning")
         return redirect(url_for("login"))
