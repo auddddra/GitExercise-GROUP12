@@ -17,10 +17,9 @@ ALLOWED_VIDEO_EXT = {"mp4", "webm", "ogg", "mov"}
 app = Flask(__name__)
 app.secret_key = "super_secret_091725"
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pins.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///users.db"
 
 
 db = SQLAlchemy(app)
@@ -92,6 +91,7 @@ class User(db.Model):
     username = db.Column(db.String(150), nullable=True, unique=True)
     email = db.Column(db.String(150), nullable=False, unique=True)
     password = db.Column(db.String(200), nullable=True)  # nullable so Google login works
+    is_admin = db.Column(db.Boolean, default=False)  
 
 # ---------------- Routes ---------------- #
 
@@ -147,12 +147,20 @@ def index():
     # Get approved cards
     cards = Card.query.filter_by(status="approved").all()
 
+    # Check login/admin status
+    user = None
+    is_admin = False
+    if "user_id" in session:
+        user = User.query.get(session["user_id"])
+        is_admin = user.is_admin if user else False
+    
+
     # Filter by search query if present
     if search_query:
         filtered_cards = [
             card for card in cards
             if search_query.lower() in card.to_name.lower() or
-               (card.from_name and search_query.lower() in card.from_name.lower())
+            (card.from_name and search_query.lower() in card.from_name.lower())
         ]
         def similarity(card):
             to_similarity = SequenceMatcher(None, search_query.lower(), card.to_name.lower()).ratio()
@@ -165,7 +173,7 @@ def index():
     # Only include cards with valid coordinates for the map
     map_cards = [
         {"id": c.id, "to_name": c.to_name, "location": c.location,
-         "message": c.message, "lat": float(c.lat), "lng": float(c.lng)}
+        "message": c.message, "lat": float(c.lat), "lng": float(c.lng)}
         for c in cards if c.lat is not None and c.lng is not None
     ]
 
@@ -200,9 +208,26 @@ def login():
         username = request.form.get("username")
         password = request.form.get("password")
 
+        admin_check = request.form.get("admin_check")
+        passcode = request.form.get("passcode")
+
         user = User.query.filter_by(username=username).first()
 
         if user and user.password and check_password_hash(user.password, password):
+
+            # admin access
+            if user and user.password and check_password_hash(user.password, password):
+                session["user_id"] = user.id
+                session["username"] = user.username
+
+            # temporary admin access ONLY if checkbox ticked and passcode correct
+            if admin_check == "yes" and passcode == "1234":
+                session["is_admin_temp"] = True
+                flash("✅ Admin access granted for this session!", "success")
+            else:
+                session["is_admin_temp"] = False
+
+            # login session
             session["user_id"] = user.id
             session["username"] = user.username
             flash("✅ Login successful!", "success")
@@ -228,6 +253,11 @@ def logout():
 
 @app.route("/create", methods=["GET", "POST"])
 def create():
+
+    if "user_id" not in session:  
+        flash("⚠️ You must be logged in to create a card!", "warning")
+        return redirect(url_for("login"))
+
     pre_lat = request.args.get("lat")
     pre_lng = request.args.get("lng")
 
@@ -333,6 +363,16 @@ def serialize_card(card):
 
 @app.route("/admin")
 def admin_dashboard():
+
+    if "user_id" not in session:
+        flash("⚠️ Please log in first.", "warning")
+        return redirect(url_for("login"))
+
+    user = User.query.get(session["user_id"])
+    if not user or not user.is_admin:   # ✅ only admins allowed
+        flash("❌ You do not have permission to view this page.", "danger")
+        return redirect(url_for("index"))
+
     pending = Card.query.filter_by(status="pending").all()
     approved = Card.query.filter_by(status="approved").all()
     rejected = Card.query.filter_by(status="rejected").all()
@@ -390,6 +430,14 @@ def edit_card(card_id):
         flash("Card updated successfully!", "success")
         return redirect(url_for("admin_dashboard"))
     return render_template("edit.html", card=card)
+
+@app.context_processor
+def inject_user():
+    user_id = session.get("user_id")
+    if user_id:
+        user = User.query.get(user_id)
+        return dict(current_user=user)
+    return dict(current_user=None)
 
 # ---------- Run ----------
 if __name__ == "__main__":

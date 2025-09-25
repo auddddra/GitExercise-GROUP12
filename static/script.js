@@ -9,3 +9,9 @@ registerBtn.addEventListener('click',()=>{
 loginBtn.addEventListener('click',()=>{
     container.classList.remove('active');
 })
+
+function togglePasscode() {
+  const check = document.getElementById('adminCheck');
+  const passDiv = document.getElementById('passcodeDiv');
+  passDiv.style.display = check.checked ? 'block' : 'none';
+}

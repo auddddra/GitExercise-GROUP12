@@ -47,8 +47,19 @@
     <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google Logo">
     Login with Google
   </button>
-</a>
+  </a>
     <button type="submit" class="btn">Login</button>
+
+  <div class="input-box">
+    <input type="checkbox" id="adminCheck" name="admin_check" value="yes" onchange="togglePasscode()">
+    <label for="adminCheck">Admin Access</label>
+  </div>
+
+  <div class="input-box" id="passcodeDiv" style="display:none;">
+    <input type="password" name="passcode" placeholder="Enter passcode">
+  </div>
+
+
   </form>
 </div>
 
@@ -69,6 +80,7 @@
       <i class="fa-solid fa-lock"></i>
     </div>
     <button type="submit" class="btn">Register</button>
+
   </form>
 </div>
 
