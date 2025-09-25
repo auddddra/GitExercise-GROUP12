@@ -9,6 +9,10 @@ import os
 import requests
 from dotenv import load_dotenv
 
+load_dotenv()
+
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1' # http for local dev
+
 # ---------- Config ----------
 UPLOAD_FOLDER = "static/uploads"
 ALLOWED_IMAGE_EXT = {"png", "jpg", "jpeg", "gif", "webp"}
@@ -26,13 +30,16 @@ db = SQLAlchemy(app)
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # GOOGLE API
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
+
 google_bp = make_google_blueprint(
-    client_id="YOUR_GOOGLE_CLIENT_ID",
-    client_secret="YOUR_GOOGLE_CLIENT_SECRET",
+    client_id=GOOGLE_CLIENT_ID,
+    client_secret=GOOGLE_CLIENT_SECRET,
+    scope=["profile", "email"],
     redirect_to="google_login"
 )
 app.register_blueprint(google_bp, url_prefix="/login")
-
 
 with app.app_context():
     db.create_all()
