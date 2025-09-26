@@ -47,8 +47,10 @@
        This action cannot be undone ✉️</p>
 
     <div class="modal-buttons">
-      <button id="confirmDelete" class="btn danger-btn">Yes, Delete</button>
-      <button class="btn cancel-delete">Cancel</button>
+      <form action="{{ url_for('delete_profile') }}" method="POST">
+        <button type="submit" id="confirmDelete" class="btn danger-btn">Yes, Delete</button>
+      </form>
+      <button type="button" class="btn cancel-delete">Cancel</button>
     </div>
   </div>
 </div>
