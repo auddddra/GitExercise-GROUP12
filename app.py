@@ -8,6 +8,9 @@ from difflib import SequenceMatcher
 import os
 import requests
 from dotenv import load_dotenv
+from flask_mail import Mail, Message
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
+import sqlite3
 
 load_dotenv()
 
@@ -28,6 +31,17 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 db = SQLAlchemy(app)
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+# Email Config
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = os.getenv("MAIL_USERNAME")
+app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")
+mail = Mail(app)
+
+# Token Serializer
+s = URLSafeTimedSerializer(app.secret_key)
 
 # GOOGLE API
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
@@ -244,6 +258,52 @@ def login():
             return redirect(url_for("login"))
         
     return render_template("login.html")
+
+@app.route("/forgot", methods=["POST"])
+def forgot():
+    email = request.form.get("email")
+    user = User.query.filter_by(email=email).first()
+
+    if not user:
+        flash("❌ No account with that email.", "danger")
+        return redirect(url_for("login"))
+
+    token = s.dumps(email, salt="reset-token")
+    reset_url = url_for("reset_token", token=token, _external=True)
+
+    # Send email
+    msg = Message("Password Reset Request",
+                  sender=app.config['MAIL_USERNAME'],
+                  recipients=[email])
+    msg.body = f"Click the link to reset your password: {reset_url}\nThis link expires in 1 hour."
+    mail.send(msg)
+
+    flash("📧 A password reset link has been sent to your email!", "info")
+    return redirect(url_for("login"))
+
+@app.route("/reset/<token>", methods=["GET", "POST"])
+def reset_token(token):
+    try:
+        email = s.loads(token, salt="reset-token", max_age=3600)  # expires in 1 hour
+    except (SignatureExpired, BadSignature):
+        flash("❌ Reset link is invalid or expired.", "danger")
+        return redirect(url_for("login"))
+
+    if request.method == "POST":
+        new_password = request.form.get("password")
+        hashed_pw = generate_password_hash(new_password)
+
+        user = User.query.filter_by(email=email).first()
+        if user:
+            user.password = hashed_pw
+            db.session.commit()
+            flash("✅ Your password has been reset! Please log in.", "success")
+            return redirect(url_for("login"))
+        else:
+            flash("❌ User not found.", "danger")
+            return redirect(url_for("login"))
+
+    return render_template("reset.html", token=token)
         
 @app.route("/profile")
 def profile():
