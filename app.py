@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 import sqlite3
+from locations import get_faculty_name
 
 load_dotenv()
 
@@ -212,7 +213,7 @@ def save_location():
     lat = float(request.form["lat"])
     lng = float(request.form["lng"])
     faculty_name = get_faculty_name(lat, lng)
-    return f"Saved: {faculty_name}"
+    return jsonify({"faculty_code": faculty_name})
 
 @app.route("/register", methods=["POST", "GET"])
 def register():
