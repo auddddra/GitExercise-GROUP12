@@ -8,7 +8,13 @@ from difflib import SequenceMatcher
 import os
 import requests
 from dotenv import load_dotenv
-from locations import get_faculty_name
+from flask_mail import Mail, Message
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
+import sqlite3
+
+load_dotenv()
+
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1' # http for local dev
 
 # ---------- Config ----------
 UPLOAD_FOLDER = "static/uploads"
@@ -26,14 +32,28 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 db = SQLAlchemy(app)
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
+# Email Config
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = os.getenv("MAIL_USERNAME")
+app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")
+mail = Mail(app)
+
+# Token Serializer
+s = URLSafeTimedSerializer(app.secret_key)
+
 # GOOGLE API
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
+
 google_bp = make_google_blueprint(
-    client_id="YOUR_GOOGLE_CLIENT_ID",  
-    client_secret="YOUR_GOOGLE_CLIENT_SECRET",
+    client_id=GOOGLE_CLIENT_ID,
+    client_secret=GOOGLE_CLIENT_SECRET,
+    scope=["profile", "email"],
     redirect_to="google_login"
 )
 app.register_blueprint(google_bp, url_prefix="/login")
-
 
 with app.app_context():
     db.create_all()
@@ -242,6 +262,52 @@ def login():
             return redirect(url_for("login"))
         
     return render_template("login.html")
+
+@app.route("/forgot", methods=["POST"])
+def forgot():
+    email = request.form.get("email")
+    user = User.query.filter_by(email=email).first()
+
+    if not user:
+        flash("❌ No account with that email.", "danger")
+        return redirect(url_for("login"))
+
+    token = s.dumps(email, salt="reset-token")
+    reset_url = url_for("reset_token", token=token, _external=True)
+
+    # Send email
+    msg = Message("Password Reset Request",
+                  sender=app.config['MAIL_USERNAME'],
+                  recipients=[email])
+    msg.body = f"Click the link to reset your password: {reset_url}\nThis link expires in 1 hour."
+    mail.send(msg)
+
+    flash("📧 A password reset link has been sent to your email!", "info")
+    return redirect(url_for("login"))
+
+@app.route("/reset/<token>", methods=["GET", "POST"])
+def reset_token(token):
+    try:
+        email = s.loads(token, salt="reset-token", max_age=3600)  # expires in 1 hour
+    except (SignatureExpired, BadSignature):
+        flash("❌ Reset link is invalid or expired.", "danger")
+        return redirect(url_for("login"))
+
+    if request.method == "POST":
+        new_password = request.form.get("password")
+        hashed_pw = generate_password_hash(new_password)
+
+        user = User.query.filter_by(email=email).first()
+        if user:
+            user.password = hashed_pw
+            db.session.commit()
+            flash("✅ Your password has been reset! Please log in.", "success")
+            return redirect(url_for("login"))
+        else:
+            flash("❌ User not found.", "danger")
+            return redirect(url_for("login"))
+
+    return render_template("reset.html", token=token)
         
 @app.route("/profile")
 @app.route("/profile/<int:user_id>")
@@ -258,6 +324,20 @@ def profile(user_id=None):
     
     return render_template("profile-page.html", username=user.username, user=user)
 
+@app.route("/update_username", methods=["POST"])
+def update_username():
+    new_username = request.form.get("nickname")
+    if not new_username or not new_username.strip():
+        flash("❌ Username cannot be empty.", "danger")
+        return redirect(url_for("profile"))
+
+    user = User.query.get(session["user_id"])
+    user.username = new_username
+    db.session.commit()
+
+    session["username"] = new_username
+    flash("✅ Username updated!", "success")
+    return redirect(url_for("profile"))
 
 @app.route("/logout")
 def logout():
@@ -472,8 +552,3 @@ if __name__ == "__main__":
     with app.app_context():
         db.create_all()
     app.run(debug=True)
-
-
-
-
-

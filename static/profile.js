@@ -3,11 +3,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const modal = document.getElementById("editModal");
   const closeBtn = document.querySelector(".close-btn");
   const cancelBtn = document.querySelector(".cancel-btn");
-  const form = document.getElementById("editForm");
 
   // Open modal
   editBtn.addEventListener("click", () => {
-    console.log("🎉 Edit button clicked!");
     modal.style.display = "flex";
   });
 
@@ -27,6 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
       modal.style.display = "none";
     }
   });
+});
 
   // Form validation
   form.addEventListener("submit", (e) => {
@@ -50,8 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
     alert("Profile updated successfully! ✅");
     modal.style.display = "none";
   });
-});
-
+  
   // ----- DELETE PROFILE MODAL -----
 const deleteBtn = document.querySelector(".delete-btn"); // outer button
 const deleteModal = document.getElementById("deleteModal");
@@ -79,10 +77,4 @@ window.addEventListener("click", (e) => {
   if (e.target === deleteModal) {
     deleteModal.style.display = "none";
   }
-});
-
-// Confirm delete → redirect
-confirmDelete.addEventListener("click", () => {
-  alert("Profile deleted 💔 Redirecting to login...");
-  window.location.href = "login.html"; 
 });

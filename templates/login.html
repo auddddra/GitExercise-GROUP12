@@ -84,17 +84,16 @@
   </form>
 </div>
 
-
-      <!-- Forgot Password Form -->
+    <!-- Forgot Password Form -->
       <div class="form-box forgot">
-        <form action="#">
-          <h1>Reset Password ✉️</h1>
-          <div class="input-box">
-            <input type="email" placeholder="Enter your email" required>
-            <i class="fa-solid fa-envelope"></i>
-          </div>
-          <button type="submit" class="btn">Send Reset Link</button>
-          <button type="button" class="btn back-btn">Back to Login</button>
+        <form action="/forgot" method="POST">
+        <h1>Reset Password ✉️</h1>
+        <div class="input-box">
+          <input type="email" name="email" placeholder="Enter your email" required>
+          <i class="fa-solid fa-envelope"></i>
+        </div>
+        <button type="submit" class="btn">Send Reset Link</button>
+        <button type="button" class="btn back-btn">Back to Login</button>
         </form>
       </div>
 
@@ -103,4 +102,13 @@
 
   <script src="static/script.js"></script>
 </body>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
 </html>

@@ -171,7 +171,7 @@ form input {
   border: none;
   outline: none;
   background: #ffffff;
-  color: #fff;
+  color: #000;
 }
 
 form input:focus {
