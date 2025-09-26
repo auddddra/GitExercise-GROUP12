@@ -50,10 +50,40 @@ GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
 google_bp = make_google_blueprint(
     client_id=GOOGLE_CLIENT_ID,
     client_secret=GOOGLE_CLIENT_SECRET,
-    scope=["profile", "email"],
-    redirect_to="google_login"
+        scope=[
+        "openid",
+        "https://www.googleapis.com/auth/userinfo.profile",
+        "https://www.googleapis.com/auth/userinfo.email"
+    ],
+    redirect_url="/google_authorized"
 )
+
 app.register_blueprint(google_bp, url_prefix="/login")
+
+@app.route("/google_authorized")
+def google_authorized():
+    if not google.authorized:
+        return redirect(url_for("google.login"))
+
+    resp = google.get("/oauth2/v2/userinfo")
+    if not resp.ok:
+        return "Google login failed", 400
+
+    user_info = resp.json()
+    email = user_info["email"]
+
+    # Check if user exists
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        user = User(username=email.split("@")[0], email=email, password=None)
+        db.session.add(user)
+        db.session.commit()
+
+    # Save login session
+    session["user_id"] = user.id
+    session["username"] = user.username
+    flash("✅ Logged in with Google!", "success")
+    return redirect(url_for("profile"))
 
 with app.app_context():
     db.create_all()
@@ -115,33 +145,6 @@ class User(db.Model):
     is_admin = db.Column(db.Boolean, default=False)  
 
 # ---------------- Routes ---------------- #
-
-# Google Login Route
-@app.route("/google_login")
-def google_login():
-    if not google.authorized:
-        return redirect(url_for("google.login"))
-
-    resp = google.get("/oauth2/v2/userinfo")
-    if not resp.ok:
-        return "Google login failed", 400
-
-    user_info = resp.json()
-    email = user_info["email"]
-
-    # check if user already exists
-    user = User.query.filter_by(email=email).first()
-    if not user:
-        user = User(username=email.split("@")[0], email=email, password=None)
-        db.session.add(user)
-        db.session.commit()
-
-    # save login session
-    session["user_id"] = user.id
-    session["username"] = user.username
-    flash("✅ Logged in with Google!", "success")
-    return redirect(url_for("profile"))
-
 
 # ---------- Message Route ----------
 @app.route("/message", methods=["GET", "POST"])
