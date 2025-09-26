@@ -209,7 +209,7 @@ def save_location():
     lat = float(request.form["lat"])
     lng = float(request.form["lng"])
     faculty_name = get_faculty_name(lat, lng)
-    return jsonify({"faculty_code": faculty_name})
+    return f"Saved: {faculty_name}"
 
 @app.route("/register", methods=["POST", "GET"])
 def register():
