@@ -16,7 +16,7 @@
         <input type="hidden" name="lat" id="lat" value="{{ pre_lat or '' }}">
         <input type="hidden" name="lng" id="lng" value="{{ pre_lng or '' }}">
 
-        <div id="map" style="height: 300px; margin-top: 10px;"></div>
+        <div id="map2" style="height: 200px; width: 150; margin-top: 20px;"></div>
 
         <label for="message">Message:</label>
         <textarea id="message" name="message" rows="5" placeholder="What would you like them to know?..." required></textarea>
@@ -52,7 +52,7 @@
 <script>
 
     // Initialize map
-    const map = L.map('map').setView([2.9273, 101.6415], 15);
+    const map = L.map('map2').setView([2.9273, 101.6415], 15);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,

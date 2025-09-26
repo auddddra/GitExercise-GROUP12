@@ -8,6 +8,7 @@ from difflib import SequenceMatcher
 import os
 import requests
 from dotenv import load_dotenv
+from locations import get_faculty_name
 
 # ---------- Config ----------
 UPLOAD_FOLDER = "static/uploads"
@@ -27,7 +28,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # GOOGLE API
 google_bp = make_google_blueprint(
-    client_id="YOUR_GOOGLE_CLIENT_ID",
+    client_id="YOUR_GOOGLE_CLIENT_ID",  
     client_secret="YOUR_GOOGLE_CLIENT_SECRET",
     redirect_to="google_login"
 )
@@ -80,6 +81,8 @@ class Card(db.Model):
     lng = db.Column(db.Float, nullable=True)
     status = db.Column(db.String(20), default="pending")  # pending, approved, rejected, archived
 
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True) # links cards to users
+
 class Photo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     card_id = db.Column(db.Integer, db.ForeignKey("card.id"), nullable=False)
@@ -92,6 +95,8 @@ class User(db.Model):
     email = db.Column(db.String(150), nullable=False, unique=True)
     password = db.Column(db.String(200), nullable=True)  # nullable so Google login works
     is_admin = db.Column(db.Boolean, default=False)  
+
+    cards = db.relationship("Card", backref="user", lazy=True) # links users to cards
 
 # ---------------- Routes ---------------- #
 
@@ -179,6 +184,12 @@ def index():
 
     return render_template("index.html", cards=cards, search_query=search_query, map_cards=map_cards)
 
+@app.route("/location", methods=["POST"])
+def save_location():
+    lat = float(request.form["lat"])
+    lng = float(request.form["lng"])
+    faculty_name = get_faculty_name(lat, lng)
+    return f"Saved: {faculty_name}"
 
 @app.route("/register", methods=["POST", "GET"])
 def register():
@@ -215,15 +226,9 @@ def login():
 
         if user and user.password and check_password_hash(user.password, password):
 
-            # admin access
-            if user and user.password and check_password_hash(user.password, password):
-                session["user_id"] = user.id
-                session["username"] = user.username
-
             # temporary admin access ONLY if checkbox ticked and passcode correct
             if admin_check == "yes" and passcode == "1234":
                 session["is_admin_temp"] = True
-                flash("✅ Admin access granted for this session!", "success")
             else:
                 session["is_admin_temp"] = False
 
@@ -239,13 +244,19 @@ def login():
     return render_template("login.html")
         
 @app.route("/profile")
-def profile():
-    if "user_id" not in session:
-        flash("⚠️ Please log in first.", "warning")
-        return redirect(url_for("login"))
+@app.route("/profile/<int:user_id>")
+def profile(user_id=None):
+    # If a specific user_id is passed, show that profile
+    if user_id:
+        user = User.query.get_or_404(user_id)
+    else:
+        # Otherwise, show the logged-in user's profile
+        if "user_id" not in session:
+            flash("⚠️ Please log in first.", "warning")
+            return redirect(url_for("login"))
+        user = User.query.get(session["user_id"])
     
-    user = User.query.get(session["user_id"])
-    return render_template("profile-page.html", username=session.get("username"), user=user)
+    return render_template("profile-page.html", username=user.username, user=user)
 
 
 @app.route("/logout")
@@ -282,7 +293,8 @@ def create():
                 song=song,
                 lat=float(lat) if lat else None,
                 lng=float(lng) if lng else None,
-                status="pending"
+                status="pending",
+                user_id=session["user_id"]
             )
             db.session.add(new_card)
             db.session.flush()
@@ -366,27 +378,32 @@ def serialize_card(card):
 
 @app.route("/admin")
 def admin_dashboard():
-    if "user_id" not in session:
-        flash("⚠️ Please log in first.", "warning")
-        return redirect(url_for("login"))
-
-    user = User.query.get(session["user_id"])
-    if not user or not user.is_admin:   # ✅ only admins allowed
-        flash("❌ You do not have permission to view this page.", "danger")
-        return redirect(url_for("index"))
 
     pending = Card.query.filter_by(status="pending").all()
     approved = Card.query.filter_by(status="approved").all()
     rejected = Card.query.filter_by(status="rejected").all()
     archived = Card.query.filter_by(status="archived").all()
 
-    return render_template(
-        "admin.html",
+    user_data = []
+    users = User.query.all()  
+    for u in users:
+        total_cards = Card.query.filter(Card.user_id == u.id, Card.status != "archived").count()
+        user_data.append({
+            "id": u.id,
+            "username": u.username,
+            "email": u.email,
+            "total_cards": total_cards
+        })
+
+
+    return render_template("admin.html",
         pending=[serialize_card(c) for c in pending],
         approved=[serialize_card(c) for c in approved],
         rejected=[serialize_card(c) for c in rejected],
-        archived=[serialize_card(c) for c in archived]
+        archived=[serialize_card(c) for c in archived],
+        user_data=user_data
     )
+    
 
 @app.route("/admin/card/<int:card_id>/approve", methods=["POST"])
 def approve_card(card_id):
@@ -433,13 +450,22 @@ def edit_card(card_id):
         return redirect(url_for("admin_dashboard"))
     return render_template("edit.html", card=card)
 
-@app.context_processor
-def inject_user():
-    user_id = session.get("user_id")
-    if user_id:
-        user = User.query.get(user_id)
-        return dict(current_user=user)
-    return dict(current_user=None)
+
+@app.route('/admin/delete_user/<int:user_id>', methods=["POST"])
+def delete_user(user_id):
+    user = User.query.get_or_404(user_id)
+
+    # Move all user's cards to archive
+    cards = Card.query.filter_by(user_id=user.id).all()
+    for card in cards:
+        card.status = "archived"
+
+    # Now delete the user
+    db.session.delete(user)
+    db.session.commit()
+
+    return redirect(url_for("admin_dashboard"))
+
 
 # ---------- Run ----------
 if __name__ == "__main__":
