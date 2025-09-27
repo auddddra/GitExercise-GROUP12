@@ -475,14 +475,7 @@ def serialize_card(card):
 @app.route("/admin")
 def admin_dashboard():
 
-    if "user_id" not in session:
-        flash("⚠️ Please log in first.", "warning")
-        return redirect(url_for("login"))
-
     user = User.query.get(session["user_id"])
-    if not user or not user.is_admin:   # ✅ only admins allowed
-        flash("❌ You do not have permission to view this page.", "danger")
-        return redirect(url_for("index"))
 
     pending = Card.query.filter_by(status="pending").all()
     approved = Card.query.filter_by(status="approved").all()
@@ -538,7 +531,6 @@ def edit_card(card_id):
         card.lng = request.form["lng"]
         card.status = "approved"
         db.session.commit()
-        flash("Card updated successfully!", "success")
         return redirect(url_for("admin_dashboard"))
     return render_template("edit.html", card=card)
 
