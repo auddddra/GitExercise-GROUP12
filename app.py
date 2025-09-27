@@ -125,7 +125,7 @@ class Card(db.Model):
     message = db.Column(db.Text, nullable=False)
     photos = db.relationship("Photo", backref="card", lazy=True)
     video = db.Column(db.String(200), nullable=True)
-    from_name = db.Column(db.String(50), nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True) 
     song = db.Column(db.Text, nullable=True)
     created = db.Column(db.DateTime, default=datetime.utcnow)
     lat = db.Column(db.Float, nullable=True)
@@ -341,20 +341,20 @@ def update_username():
 
 @app.route("/delete_profile", methods=["POST"])
 def delete_profile():
-    if "user_id" not in session:
-        flash("❌ You need to log in first.", "danger")
-        return redirect(url_for("login"))
-
     user = User.query.get(session["user_id"])
     if user:
+        
+        Card.query.filter_by(user_id=user.id).delete()
         db.session.delete(user)
         db.session.commit()
-        session.clear()  # log out
-        flash("🗑️ Your profile has been deleted.", "info")
-        return redirect(url_for("login"))
+        session.clear()  
+        flash("🗑️ Your profile and all your cards have been deleted.", "success")
+        return redirect(url_for("index"))
     else:
         flash("❌ User not found.", "danger")
         return redirect(url_for("profile"))
+
+
 
 @app.route("/logout")
 def logout():
@@ -386,12 +386,13 @@ def create():
                 to_name=to_name,
                 location=location,
                 message=message,
-                from_name=from_name,
+                user_id=session["user_id"],  
                 song=song,
                 lat=float(lat) if lat else None,
                 lng=float(lng) if lng else None,
                 status="pending"
             )
+
             db.session.add(new_card)
             db.session.flush()
 
@@ -474,7 +475,7 @@ def serialize_card(card):
 
 @app.route("/admin")
 def admin_dashboard():
-
+    
     user = User.query.get(session["user_id"])
 
     pending = Card.query.filter_by(status="pending").all()
@@ -482,13 +483,27 @@ def admin_dashboard():
     rejected = Card.query.filter_by(status="rejected").all()
     archived = Card.query.filter_by(status="archived").all()
 
-    return render_template(
-        "admin.html",
+    
+    users = User.query.all()
+    user_data = []
+    for u in users:
+        total_cards = Card.query.filter_by(user_id=u.id).count()  # safer than from_name
+        user_data.append({
+            "id": u.id,
+            "username": u.username,
+            "email": u.email,
+            "total_cards": total_cards
+        })
+
+
+    return render_template("admin.html",
         pending=[serialize_card(c) for c in pending],
         approved=[serialize_card(c) for c in approved],
         rejected=[serialize_card(c) for c in rejected],
-        archived=[serialize_card(c) for c in archived]
+        archived=[serialize_card(c) for c in archived],
+        user_data=user_data 
     )
+
 
 @app.route("/admin/card/<int:card_id>/approve", methods=["POST"])
 def approve_card(card_id):
@@ -533,6 +548,31 @@ def edit_card(card_id):
         db.session.commit()
         return redirect(url_for("admin_dashboard"))
     return render_template("edit.html", card=card)
+
+@app.route("/user/<int:user_id>")
+def view_user_profile(user_id):
+    current_user = User.query.get(session.get("user_id"))
+    user = User.query.get_or_404(user_id)
+    return render_template("profile-page.html", user=user, username=user.username)
+
+
+@app.route("/admin/delete_user/<int:user_id>", methods=["POST"])
+def admin_delete_user(user_id):
+
+    user = User.query.get(user_id)
+    if user:
+       
+        Card.query.filter_by(user_id=user.id).delete()
+        db.session.delete(user)
+        db.session.commit()
+        flash(f"🗑️ User {user.username} and all their cards have been deleted.")
+    else:
+        flash("❌ User not found.", "danger")
+
+    return redirect(url_for("admin_dashboard"))
+
+
+
 
 @app.context_processor
 def inject_user():

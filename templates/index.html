@@ -37,42 +37,6 @@
 <div id="map"></div>
 
 <div class="gallery">
-    {% if not search_query %}
-    <!-- Demo cards only appear if there is no search query -->
-    <div class="card">
-        <h3>To: Aisyah</h3>
-        <h4 class="location">The Bridge Near FOM</h4>
-        <p>I always stopped here after class with my best friend.</p>
-        <iframe style="border-radius:12px" 
-            src="https://open.spotify.com/embed/track/5k38wzpLb15YgncyWdTZE4" 
-            width="100%" height="80" frameborder="0" 
-            allowtransparency="true" allow="encrypted-media">
-        </iframe>
-    </div>
-
-    <div class="card">
-        <h3>To: Melissa</h3>
-        <h4 class="location">Library Steps</h4>
-        <p>Where I met you for the first time.</p>
-        <iframe style="border-radius:12px" 
-            src="https://open.spotify.com/embed/track/0tgVpDi06FyKpA1z0VMD4v" 
-            width="100%" height="80" frameborder="0" 
-            allowtransparency="true" allow="encrypted-media">
-        </iframe>
-    </div>
-
-        <div class="card">
-        <h3>To: Michael</h3>
-        <h4 class="location">Haji tapah</h4>
-        <p>my favourite memroy of us will always be at here.</p>
-        <iframe style="border-radius:12px" 
-            src="https://open.spotify.com/embed/track/3ZCTVFBt2Brf31RLEnCkWJ" 
-            width="100%" height="80" frameborder="0" 
-            allowtransparency="true" allow="encrypted-media">
-        </iframe>
-    </div>
-    {% endif %}
-
     <!-- User-submitted cards -->
     {% for card in cards %}
         <div class="card" data-card-id="{{ card.id }}">

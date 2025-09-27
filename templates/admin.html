@@ -157,17 +157,23 @@
     </thead>
     <tbody>
         {% for u in user_data %}
-            <tr onclick="window.location='{{ url_for('profile', user_id=u.id) }}'">
+            <tr onclick="window.location='{{ url_for('view_user_profile', user_id=u.id) }}'">
                 <td>{{ u.username }}</td>
                 <td>{{ u.email }}</td>
                 <td>{{ u.total_cards }}</td>
                 <td>
-                    <form action="{{ url_for('delete_user', user_id=u.id) }}" method="POST" style="display:inline;">
-                        <button type="submit" onclick="return confirm('Delete this user?')">Delete</button>
+                    <form action="{{ url_for('admin_delete_user', user_id=u.id) }}" method="POST"
+                        style="display:inline;"
+                        onsubmit="return confirm('Are you sure you want to delete this user? This action cannot be undone.');"
+                        onclick="event.stopPropagation();">
+                        <button type="submit">Delete</button>
                     </form>
+
+
                 </td>
             </tr>
         {% endfor %}
+
     </tbody>
 </table>
 
