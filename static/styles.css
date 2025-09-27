@@ -1,3 +1,6 @@
+ @import url('https://fonts.googleapis.com/css2?family=Homemade+Apple&display=swap'); 
+
+
 /* General */
 body {
     font-family: "Poppins", sans-serif;
@@ -9,7 +12,6 @@ body {
 
 /* Login/Register page */
 * {
-    font-family: "Poppins", sans-serif;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -178,8 +180,8 @@ body {
     border: 2px solid rgb(255, 211, 235);
     cursor: pointer;
     font-size: 16px;
-    font-weight: 600;
-    color: #ff69b4;     
+    font-weight: 600;  
+    color: #955d7f;   
     display: flex;
     align-items: center;
     justify-content: center;
@@ -197,9 +199,12 @@ body {
 .google-btn:hover {
     background: rgb(255, 211, 235);
     color: #fff;
-    box-shadow: 0 0 12px rgba(255, 105, 180, 0.5);
+     box-shadow: 0 0 12px rgba(255, 105, 180, 0.5);
+
 }
 
+
+/* index.html */
 /* Header */
 .header-section {
     text-align: center;
@@ -227,12 +232,12 @@ body {
     flex-wrap: wrap;
     margin-top: 1rem;
 }
-/* user log in*/
 
+/* user log in*/
 .user-button {
     position: absolute;
-    top: 30px;      /* push it down a bit */
-    right: 36px;    /* stay on the right */
+    top: 30px;      
+    right: 36px;    
 }
 
 .user-button a {
@@ -310,6 +315,14 @@ body {
     border-radius: 60px;
 }
 
+#map2 {
+  height: 100px;
+    border-radius: 12px;
+    border: 2px solid #907d80;
+    border-radius: 60px;
+}
+
+
 /* Gallery */
 .gallery {
     display: flex;
@@ -325,8 +338,8 @@ body {
 .gallery {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center; /* center horizontally */
-    gap: 12px; /* spacing between cards */
+    justify-content: center; 
+    gap: 12px; 
     padding: 2rem 0;
 }
 
@@ -336,8 +349,8 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    width: 300px;      /* same width for all cards */
-    min-height: 100px; /* ensures uniform height */
+    width: 350px;      
+    min-height: 150px; 
     padding: 1.5rem;
     border-radius: 12px;
     box-shadow: 0 6px 15px rgba(0,0,0,0.06);
@@ -387,6 +400,7 @@ body {
     margin-top: 0.5rem;
 }
 
+/* create.html */
 /* Form Section (tell us your story) */
 .form-section {
     max-width: 600px;
@@ -455,6 +469,7 @@ body {
     background: #b5657d;
 }
 
+/* card_detail.html */
 /* card detail */
 body.card-page {
     background-color: #fff0f5;
@@ -473,9 +488,9 @@ body.card-page {
     padding: 2rem;
     display: flex;
     flex-direction: column;
-    align-items: center;  /* center all content horizontally */
+    align-items: center;  
     gap: 1.5rem;
-    text-align: center;   /* text inside card also centered */
+    text-align: center;   
 }
 
 .card-header h1 {
@@ -541,7 +556,7 @@ body.card-page {
 }
 
 .song-card iframe {
-    max-width: 100%;           /* ensure it fits inside card */
+    max-width: 100%;           
 }
 
 .song-label {
@@ -552,7 +567,7 @@ body.card-page {
 
 .card-footer {
     margin-top: 1.5rem;
-    text-align: center;  /* center the footer */
+    text-align: center;  
     font-size: 0.9rem;
     color: #666;
 }
@@ -588,9 +603,9 @@ body.card-page {
 
 /* contact donw below at index.html */
 .footer {
-    text-align: center;      /* centers the content */
-    padding: 1rem 0;         /* some space above/below */
-    background-color: #fff0f5; /* optional, match your theme */
+    text-align: center;      
+    padding: 1rem 0;        
+    background-color: #fff0f5; 
 }
 
 .footer a {
@@ -602,15 +617,15 @@ body.card-page {
 }
 
 .footer a:hover {
-    color: #b5657d;  /* darker pink on hover */
+    color: #b5657d;  
 }
 footer {
-    background-color: #fff0f5; /* matches your theme */
+    background-color: #fff0f5; 
     padding: 1rem 0;
 }
 
 .footer-rights {
-    text-align: center;       /* center horizontally */
+    text-align: center;      
     font-family: 'Poppins', sans-serif;
     color: #85757dff;
     font-size: 0.9rem;
@@ -633,13 +648,14 @@ footer {
     text-decoration: underline;
 } 
 
+/* contact.html */
 /* contact page */
 .contact-page {
     display: flex;
     flex-direction: column;
-    align-items: center;   /* center horizontally */
-    justify-content: flex-start;  /* start from top */
-    padding: 2rem 1rem;    /* add some padding around */
+    align-items: center;   
+    justify-content: flex-start;  
+    padding: 2rem 1rem;    
 }
 
 .contact-page h1 {
@@ -653,10 +669,10 @@ footer {
 
 .contact-container {
     display: flex;
-    justify-content: center;   /* centers the cards horizontally */
+    justify-content: center;   
     gap: 2rem;
-    flex-wrap: wrap;           /* wrap on small screens */
-    max-width: 900px;          /* constrain container width */
+    flex-wrap: wrap;           
+    max-width: 900px;          
 }
 
 .contact-card {
@@ -719,7 +735,7 @@ footer {
     margin: 5px 5px 0 0; 
 }
 
-
+/* admin page */
 .admin-card {
     background: white;
     display: flex;

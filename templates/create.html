@@ -16,7 +16,7 @@
         <input type="hidden" name="lat" id="lat" value="{{ pre_lat or '' }}">
         <input type="hidden" name="lng" id="lng" value="{{ pre_lng or '' }}">
 
-        <div id="map" style="height: 300px; margin-top: 10px;"></div>
+        <div id="map2" style="height: 200px; width: 150; margin-top: 20px;"></div>
 
         <label for="message">Message:</label>
         <textarea id="message" name="message" rows="5" placeholder="What would you like them to know?..." required></textarea>
@@ -52,7 +52,7 @@
 <script>
 
     // Initialize map
-    const map = L.map('map').setView([2.9273, 101.6415], 15);
+    const map = L.map('map2').setView([2.9273, 101.6415], 15);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
@@ -80,29 +80,29 @@
 
     // On map click: add marker, update lat/lng, and fetch location name
     map.on('click', function(e) {
-        var lat = e.latlng.lat;
-        var lng = e.latlng.lng;
+    var lat = e.latlng.lat;
+    var lng = e.latlng.lng;
 
-        // Place or move marker
-        if (marker) {
-            marker.setLatLng(e.latlng);
-        } else {
-            marker = L.marker(e.latlng).addTo(map);
-        }
+    // Place or move marker
+    if (marker) {
+        marker.setLatLng(e.latlng);
+    } else {
+        marker = L.marker(e.latlng).addTo(map);
+    }
 
-        // Update hidden fields
-        document.getElementById('lat').value = lat;
-        document.getElementById('lng').value = lng;
+    // Update hidden fields
+    document.getElementById('lat').value = lat;
+    document.getElementById('lng').value = lng;
 
-        // Reverse geocoding using Nominatim
-        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`)
-            .then(response => response.json())
-            .then(data => {
-                if (data && data.display_name) {
-                    document.getElementById('location').value = data.display_name;
-                }
-            })
-            .catch(err => console.log(err));
+    // Fetch short faculty name from Flask
+    fetch("/location", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `lat=${lat}&lng=${lng}`}).then(response => response.json()).then(data => {
+        document.getElementById('location').value = data.faculty_code; // short name
+    })
+
+    .catch(err => console.log(err));
     });
 
     // Display coordinates if pre-filled

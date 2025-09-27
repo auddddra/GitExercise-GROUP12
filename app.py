@@ -8,6 +8,14 @@ from difflib import SequenceMatcher
 import os
 import requests
 from dotenv import load_dotenv
+from flask_mail import Mail, Message
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
+import sqlite3
+from locations import get_faculty_name
+
+load_dotenv()
+
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1' # http for local dev
 
 # ---------- Config ----------
 UPLOAD_FOLDER = "static/uploads"
@@ -25,14 +33,58 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 db = SQLAlchemy(app)
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
+# Email Config
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = os.getenv("MAIL_USERNAME")
+app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")
+mail = Mail(app)
+
+# Token Serializer
+s = URLSafeTimedSerializer(app.secret_key)
+
 # GOOGLE API
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
+
 google_bp = make_google_blueprint(
-    client_id="YOUR_GOOGLE_CLIENT_ID",
-    client_secret="YOUR_GOOGLE_CLIENT_SECRET",
-    redirect_to="google_login"
+    client_id=GOOGLE_CLIENT_ID,
+    client_secret=GOOGLE_CLIENT_SECRET,
+        scope=[
+        "openid",
+        "https://www.googleapis.com/auth/userinfo.profile",
+        "https://www.googleapis.com/auth/userinfo.email"
+    ],
+    redirect_url="/google_authorized"
 )
+
 app.register_blueprint(google_bp, url_prefix="/login")
 
+@app.route("/google_authorized")
+def google_authorized():
+    if not google.authorized:
+        return redirect(url_for("google.login"))
+
+    resp = google.get("/oauth2/v2/userinfo")
+    if not resp.ok:
+        return "Google login failed", 400
+
+    user_info = resp.json()
+    email = user_info["email"]
+
+    # Check if user exists
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        user = User(username=email.split("@")[0], email=email, password=None)
+        db.session.add(user)
+        db.session.commit()
+
+    # Save login session
+    session["user_id"] = user.id
+    session["username"] = user.username
+    flash("✅ Logged in with Google!", "success")
+    return redirect(url_for("profile"))
 
 with app.app_context():
     db.create_all()
@@ -95,33 +147,6 @@ class User(db.Model):
 
 # ---------------- Routes ---------------- #
 
-# Google Login Route
-@app.route("/google_login")
-def google_login():
-    if not google.authorized:
-        return redirect(url_for("google.login"))
-
-    resp = google.get("/oauth2/v2/userinfo")
-    if not resp.ok:
-        return "Google login failed", 400
-
-    user_info = resp.json()
-    email = user_info["email"]
-
-    # check if user already exists
-    user = User.query.filter_by(email=email).first()
-    if not user:
-        user = User(username=email.split("@")[0], email=email, password=None)
-        db.session.add(user)
-        db.session.commit()
-
-    # save login session
-    session["user_id"] = user.id
-    session["username"] = user.username
-    flash("✅ Logged in with Google!", "success")
-    return redirect(url_for("profile"))
-
-
 # ---------- Message Route ----------
 @app.route("/message", methods=["GET", "POST"])
 def message():
@@ -179,6 +204,12 @@ def index():
 
     return render_template("index.html", cards=cards, search_query=search_query, map_cards=map_cards)
 
+@app.route("/location", methods=["POST"])
+def save_location():
+    lat = float(request.form["lat"])
+    lng = float(request.form["lng"])
+    faculty_name = get_faculty_name(lat, lng)
+    return f"Saved: {faculty_name}"
 
 @app.route("/register", methods=["POST", "GET"])
 def register():
@@ -237,6 +268,52 @@ def login():
             return redirect(url_for("login"))
         
     return render_template("login.html")
+
+@app.route("/forgot", methods=["POST"])
+def forgot():
+    email = request.form.get("email")
+    user = User.query.filter_by(email=email).first()
+
+    if not user:
+        flash("❌ No account with that email.", "danger")
+        return redirect(url_for("login"))
+
+    token = s.dumps(email, salt="reset-token")
+    reset_url = url_for("reset_token", token=token, _external=True)
+
+    # Send email
+    msg = Message("Password Reset Request",
+                  sender=app.config['MAIL_USERNAME'],
+                  recipients=[email])
+    msg.body = f"Click the link to reset your password: {reset_url}\nThis link expires in 1 hour."
+    mail.send(msg)
+
+    flash("📧 A password reset link has been sent to your email!", "info")
+    return redirect(url_for("login"))
+
+@app.route("/reset/<token>", methods=["GET", "POST"])
+def reset_token(token):
+    try:
+        email = s.loads(token, salt="reset-token", max_age=3600)  # expires in 1 hour
+    except (SignatureExpired, BadSignature):
+        flash("❌ Reset link is invalid or expired.", "danger")
+        return redirect(url_for("login"))
+
+    if request.method == "POST":
+        new_password = request.form.get("password")
+        hashed_pw = generate_password_hash(new_password)
+
+        user = User.query.filter_by(email=email).first()
+        if user:
+            user.password = hashed_pw
+            db.session.commit()
+            flash("✅ Your password has been reset! Please log in.", "success")
+            return redirect(url_for("login"))
+        else:
+            flash("❌ User not found.", "danger")
+            return redirect(url_for("login"))
+
+    return render_template("reset.html", token=token)
         
 @app.route("/profile")
 def profile():
@@ -261,6 +338,23 @@ def update_username():
     session["username"] = new_username
     flash("✅ Username updated!", "success")
     return redirect(url_for("profile"))
+
+@app.route("/delete_profile", methods=["POST"])
+def delete_profile():
+    if "user_id" not in session:
+        flash("❌ You need to log in first.", "danger")
+        return redirect(url_for("login"))
+
+    user = User.query.get(session["user_id"])
+    if user:
+        db.session.delete(user)
+        db.session.commit()
+        session.clear()  # log out
+        flash("🗑️ Your profile has been deleted.", "info")
+        return redirect(url_for("login"))
+    else:
+        flash("❌ User not found.", "danger")
+        return redirect(url_for("profile"))
 
 @app.route("/logout")
 def logout():
@@ -381,14 +475,7 @@ def serialize_card(card):
 @app.route("/admin")
 def admin_dashboard():
 
-    if "user_id" not in session:
-        flash("⚠️ Please log in first.", "warning")
-        return redirect(url_for("login"))
-
     user = User.query.get(session["user_id"])
-    if not user or not user.is_admin:   # ✅ only admins allowed
-        flash("❌ You do not have permission to view this page.", "danger")
-        return redirect(url_for("index"))
 
     pending = Card.query.filter_by(status="pending").all()
     approved = Card.query.filter_by(status="approved").all()
@@ -444,7 +531,6 @@ def edit_card(card_id):
         card.lng = request.form["lng"]
         card.status = "approved"
         db.session.commit()
-        flash("Card updated successfully!", "success")
         return redirect(url_for("admin_dashboard"))
     return render_template("edit.html", card=card)
 

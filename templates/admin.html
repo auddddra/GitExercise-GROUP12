@@ -4,8 +4,8 @@
 <h1 class="text-center">Admin Dashboard</h1>
 
 <div class="back-btn-container">
-            <a href="{{ url_for('index') }}" class="back-btn">← Back to Gallery</a>
-        </div>
+    <a href="{{ url_for('index') }}" class="back-btn">← Back to Gallery</a>
+</div>
         
 <div id="map"></div>
 
@@ -144,6 +144,37 @@
     addMarkers(rejectedCards, "red");
     addMarkers(archivedCards, "blue");
 </script>
+
+<h2> Report Dashboard </h2>
+<table border="1" width="100%" cellpadding="10" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Cards Posted</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for u in user_data %}
+            <tr onclick="window.location='{{ url_for('profile', user_id=u.id) }}'">
+                <td>{{ u.username }}</td>
+                <td>{{ u.email }}</td>
+                <td>{{ u.total_cards }}</td>
+                <td>
+                    <form action="{{ url_for('delete_user', user_id=u.id) }}" method="POST" style="display:inline;">
+                        <button type="submit" onclick="return confirm('Delete this user?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+
 {% endblock %}
+
+
 
 
