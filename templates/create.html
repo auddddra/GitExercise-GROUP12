@@ -78,8 +78,8 @@
 
     var marker;
 
-    // On map click: add marker, update lat/lng, and fetch location name
-    map.on('click', function(e) {
+// On map click: add marker, update lat/lng, fetch short location name
+map.on('click', function(e) {
     var lat = e.latlng.lat;
     var lng = e.latlng.lng;
 
@@ -98,21 +98,37 @@
     fetch("/location", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `lat=${lat}&lng=${lng}`}).then(response => response.json()).then(data => {
-        document.getElementById('location').value = data.faculty_code; // short name
+        body: `lat=${lat}&lng=${lng}`
     })
-
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('location').value = data.faculty_code;
+    })
     .catch(err => console.log(err));
-    });
+});
 
-    // Display coordinates if pre-filled
-    if (document.getElementById('lat').value && document.getElementById('lng').value) {
-        const lat = document.getElementById('lat').value;
-        const lng = document.getElementById('lng').value;
-        const el = document.createElement('p');
-        el.innerHTML = `<small>Memory will be placed at: <strong>${lat}, ${lng}</strong></small>`;
-        document.querySelector('.form-section').insertBefore(el, document.querySelector('.form-section').children[1]);
-    }
+// If the form loads with pre-filled lat/lng (editing an existing memory)
+if (document.getElementById('lat').value && document.getElementById('lng').value) {
+    const lat = parseFloat(document.getElementById('lat').value);
+    const lng = parseFloat(document.getElementById('lng').value);
+
+    // Show marker
+    marker = L.marker([lat, lng]).addTo(map);
+    map.setView([lat, lng], 17);
+
+    // Optionally fill the location field automatically
+    fetch("/location", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `lat=${lat}&lng=${lng}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('location').value = data.faculty_code;
+    })
+    .catch(err => console.log(err));
+}
+
 
 
     // Spotify search

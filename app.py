@@ -205,11 +205,11 @@ def index():
     return render_template("index.html", cards=cards, search_query=search_query, map_cards=map_cards)
 
 @app.route("/location", methods=["POST"])
-def save_location():
-    lat = float(request.form["lat"])
-    lng = float(request.form["lng"])
-    faculty_name = get_faculty_name(lat, lng)
-    return f"Saved: {faculty_name}"
+def location_lookup():
+    lat = float(request.form.get("lat"))
+    lng = float(request.form.get("lng"))
+    faculty_code = get_faculty_name(lat, lng)
+    return jsonify({"faculty_code": faculty_code})
 
 @app.route("/register", methods=["POST", "GET"])
 def register():
@@ -529,9 +529,18 @@ def archive_card(card_id):
 @app.route("/delete/<int:card_id>", methods=["POST"])
 def delete_card(card_id):
     card = Card.query.get_or_404(card_id)
-    card.status = "archived"
+
+    for photo in card.photos:
+        photo_path = os.path.join(app.config["UPLOAD_FOLDER"], os.path.basename(photo.file_path))
+        if os.path.exists(photo_path):
+            os.remove(photo_path)
+        db.session.delete(photo)
+
+    db.session.delete(card)
     db.session.commit()
+    flash("🗑️ Card deleted successfully.", "success")
     return redirect(url_for("admin_dashboard"))
+
 
 @app.route("/edit/<int:card_id>", methods=["GET", "POST"])
 def edit_card(card_id):
