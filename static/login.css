@@ -139,7 +139,7 @@ body {
 .btn {
   width: 100%;
   height: 48px;
-  background: #db8fb6; /* pink */
+  background: #db8fb6; 
   border-radius: 8px;
   border: none;
   cursor: pointer;
@@ -204,8 +204,8 @@ body {
   display: inline-block;
   width: 100%;
   height: 50px;
-  background: #cbabbae5; /* pastel pink */
-  border-radius: 50px; /* pill shape */
+  background: #cbabbae5; 
+  border-radius: 50px; 
   border: none;
   cursor: pointer;
   font-size: 16px;
@@ -218,7 +218,7 @@ body {
 }
 
 .btn:hover {
-  background: #8a6a79ff; /* darker pink */
+  background: #8a6a79ff;
   box-shadow: 0 6px 14px rgba(219, 143, 182, 0.4);
 }
 

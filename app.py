@@ -155,7 +155,6 @@ def message():
         message = request.form.get("message")
         lat = request.form.get("lat")
         lng = request.form.get("lng")
-        # Here you can also save the message to the DB if needed
         return f"Message for {place_name} at ({lat}, {lng}): {message}"
     else:
         lat = request.args.get("lat")
@@ -169,18 +168,14 @@ def message():
 def index():
     search_query = request.args.get("q", "").strip()
 
-    # Get approved cards
     cards = Card.query.filter_by(status="approved").all()
 
-    # Check login/admin status
     user = None
     is_admin = False
     if "user_id" in session:
         user = User.query.get(session["user_id"])
         is_admin = user.is_admin if user else False
     
-
-    # Filter by search query if present
     if search_query:
         filtered_cards = [
             card for card in cards
@@ -195,7 +190,6 @@ def index():
     else:
         cards = sorted(cards, key=lambda c: c.created, reverse=True)
 
-    # Only include cards with valid coordinates for the map
     map_cards = [
         {"id": c.id, "to_name": c.to_name, "location": c.location,
         "message": c.message, "lat": float(c.lat), "lng": float(c.lng)}
@@ -251,7 +245,6 @@ def login():
                 session["user_id"] = user.id
                 session["username"] = user.username
 
-            # temporary admin access ONLY if checkbox ticked and passcode correct
             if admin_check == "yes" and passcode == "1234":
                 session["is_admin_temp"] = True
                 flash("✅ Admin access granted for this session!", "success")
@@ -487,7 +480,7 @@ def admin_dashboard():
     users = User.query.all()
     user_data = []
     for u in users:
-        total_cards = Card.query.filter_by(user_id=u.id).count()  # safer than from_name
+        total_cards = Card.query.filter_by(user_id=u.id).count()  
         user_data.append({
             "id": u.id,
             "username": u.username,
