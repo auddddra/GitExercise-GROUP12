@@ -1,15 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Homemade+Apple&family=Poppins:wght@400;500;600&display=swap');
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 
 body {
-  background-color: #fff0f5; 
-  color: #fff;
+  background: linear-gradient(135deg, #fff0f5, #FFE8F2);
+  color: #333;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -29,37 +29,39 @@ body {
 .user-icon {
   font-size: 50px;
   margin-right: 15px;
-  color: #ffffff;
-  text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+  color: #b68ea3ff;
+/*  text-shadow: 1px 1px 4px rgba(0,0,0,0.15); */
 }
 
 .profile-header h1 {
+  font-family: 'Homemade Apple', cursive !important;
   font-size: 2rem;
   font-weight: 700;
-  color: #ffffff;
-  text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+  color: #ad859aff;
+/*  text-shadow: 1px 1px 4px rgba(0,0,0,0.1); */
 }
 
 /* Profile card */
 .profile-card {
-  background: rgb(255, 211, 235);
-  border-radius: 12px;
+  background: #ffffff;
+  border-radius: 20px;
   padding: 25px;
   text-align: center;
   width: 100%;
   max-width: 600px;
   margin-bottom: 25px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+  box-shadow: 0 4px 15px rgba(219, 143, 182, 0.25);
 }
 
 .profile-card h2 {
   font-size: 1.5rem;
   margin-bottom: 8px;
+  color: #c390aaff;
 }
 
 .profile-card p {
   font-size: 1rem;
-  color: #b3b3b3;
+  color: #85757d;
 }
 
 /* Button group */
@@ -71,7 +73,9 @@ body {
   max-width: 600px;
 }
 
+/* Base button */
 .btn {
+  font-family: 'Homemade Apple', cursive !important;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -82,26 +86,29 @@ body {
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 10px rgba(219, 143, 182, 0.2);
 }
 
-/* Button styles */
+/* Edit button */
 .edit-btn {
-  background:#a4a4a4 ;
+  background: #eac0d6ff;
   color: #fff;
 }
 
 .edit-btn:hover {
-  background:#6c6969 ;
+  background: #81586dff;
+  box-shadow: 0 4px 12px rgba(219, 143, 182, 0.3);
 }
 
+/* Delete button */
 .delete-btn {
-  background: #E6A5A5;
+  background: #b27b7bff;
   color: #fff;
 }
 
 .delete-btn:hover {
-  background: #ff3b4a;
+  background: #ff7782ff;
 }
 
 /* edit profile backdrop */
@@ -118,32 +125,19 @@ body {
   justify-content: center;
 }
 
-
 /* Modal box */
 .modal-content {
-  background: #dba2a2;
+  background: #fff;
   padding: 25px;
-  border-radius: 16px;
+  border-radius: 20px;
   width: 90%;
   max-width: 400px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+  box-shadow: 0 6px 20px rgba(219,143,182,0.4);
   position: relative;
-  color: #fff;
+  color: #333;
 }
 
-.close-btn {
-  position: absolute;
-  top: 15px;
-  right: 20px;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: #aaa;
-}
-
-.close-btn:hover {
-  color: #fff;
-}
-
+.close-btn,
 .close-delete {
   position: absolute;
   top: 15px;
@@ -151,10 +145,12 @@ body {
   font-size: 1.5rem;
   cursor: pointer;
   color: #aaa;
+  transition: 0.3s;
 }
 
+.close-btn:hover,
 .close-delete:hover {
-  color: #fff;
+  color: #db8fb6;
 }
 
 /* Form styling */
@@ -162,20 +158,21 @@ form label {
   display: block;
   margin: 12px 0 6px;
   font-weight: 600;
+  color: #333;
 }
 
 form input {
   width: 100%;
   padding: 10px;
   border-radius: 8px;
-  border: none;
+  border: 1px solid #eee;
   outline: none;
-  background: #ffffff;
+  background: #f9f9f9;
   color: #000;
 }
 
 form input:focus {
-  border: 1px solid #1db954;
+  border: 1px solid #db8fb6;
 }
 
 /* Modal buttons */
@@ -185,68 +182,61 @@ form input:focus {
   margin-top: 20px;
 }
 
-.save-btn {
-  background: #fff;
-  color: #282828;
-}
-
-.save-btn:hover {
-  background: #fff;
-}
-
+.save-btn,
 .cancel-btn {
-  background: #fff;
-  color: #282828;
+  background: #db8fb6;
+  color: #fff;
+  border: none;
+  border-radius: 30px;
+  padding: 10px 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
 }
 
+.save-btn:hover,
 .cancel-btn:hover {
-  background: #fff;
+  background: #b76d93;
 }
-
 
 /* Footer */
 .footer {
-    text-align: center;      
-    padding: 1rem 0;         
-    background-color: #fff0f5;
+  text-align: center;      
+  padding: 1rem 0;         
+/* background-color: #fff0f5; */
 }
 
 .footer a {
-    font-family: 'Poppins', sans-serif;
-    color: #db8fb6;
-    text-decoration: none;
-    font-weight: bold;
-    transition: 0.3s;
+  color: #db8fb6;
+  text-decoration: none;
+  font-weight: bold;
+  transition: 0.3s;
 }
 
 .footer a:hover {
-    color: #b5657d;  
-}
-footer {
-    background-color: #fff0f5; 
-    padding: 1rem 0;
+  color: #b5657d;  
 }
 
 .footer-rights {
-    text-align: center;      
-    font-family: 'Poppins', sans-serif;
-    color: #85757dff;
-    font-size: 0.9rem;
-    font-weight: 500;
-    margin-top: 0.5rem;
+  text-align: center;      
+  color: #85757dff;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-top: 0.5rem;
 }
 
 .footer-home {
-    text-align: center;
-    margin-bottom: 0.5rem;
+  text-align: center;
+  margin-bottom: 0rem;
+  padding: 5px 25px;
 }
 
 .footer-home a {
-    text-decoration: none;
-    color: #db8fb6;
-    font-weight: 500;
+  text-decoration: none;
+  color: #db8fb6;
+  font-weight: 500;
 }
 
 .footer-home a:hover {
-    text-decoration: underline;
-} 
+  text-decoration: underline !important;
+}
