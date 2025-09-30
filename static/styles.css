@@ -76,21 +76,18 @@ body {
     transition: transform 0.6s ease-in-out, opacity 0.6s ease-in-out;
 }
 
-/* Login shown by default */
 .form-box.login {
     transform: translateX(0);
     opacity: 1;
     z-index: 2;
 }
 
-/* Register hidden to the right */
 .form-box.register {
     transform: translateX(100%);
     opacity: 0;
     z-index: 1;
 }
 
-/* Forgot form hidden by default (to the right) */
 .form-box.forgot {
     transform: translateX(100%);
     opacity: 0;
@@ -124,7 +121,7 @@ body {
     z-index: 2;
 }
 
-/* Inputs */
+
 .input-box {
     position: relative;
     margin: 20px 0;
@@ -164,7 +161,6 @@ body {
     margin-top: 10px;
 }
 
-/* Smaller toggle button inside welcome panel */
 .toggle-panel .btn {
     width: 160px;
     height: 46px;
@@ -242,7 +238,7 @@ body {
 
 .user-button a {
     padding: 0.6rem 1.5rem;
-    border: 2px solid #826372;   /* same as btn-outline */
+    border: 2px solid #826372;   
     border-radius: 30px;
     color: #b57e9a;
     font-weight: bold;
@@ -327,14 +323,13 @@ body {
 .gallery {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center; /* center all cards */
+    justify-content: center; 
     gap: 20px;
     margin: 2rem auto;
     max-width: 1200px;
 }
 
-/* Unified Card Styling */
-/* Gallery container centers cards */
+/* Gallery container cards */
 .gallery {
     display: flex;
     flex-wrap: wrap;
@@ -401,7 +396,6 @@ body {
 }
 
 /* create.html */
-/* Form Section (tell us your story) */
 .form-section {
     max-width: 600px;
     margin: 2rem auto;
@@ -470,7 +464,6 @@ body {
 }
 
 /* card_detail.html */
-/* card detail */
 body.card-page {
     background-color: #fff0f5;
     font-family: 'Arial', sans-serif;
@@ -649,7 +642,6 @@ footer {
 } 
 
 /* contact.html */
-/* contact page */
 .contact-page {
     display: flex;
     flex-direction: column;
@@ -726,7 +718,7 @@ footer {
 }
 
 .section {
-    background: #ffe6f0; /* light pink background for sections */
+    background: #ffe6f0; 
     border-radius: 20px;
     padding: 20px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
@@ -734,7 +726,7 @@ footer {
 
 .section h2 {
     color: white;
-    background: #db8fb6; /* heading background color */
+    background: #db8fb6; 
     padding: 12px 20px;
     border-radius: 12px;
     font-size: 1.2rem;

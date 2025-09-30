@@ -56,7 +56,7 @@
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
-    minZoom: 15, // optional: keep users zoomed in close to MMU
+    minZoom: 15, 
     attribution: '© OpenStreetMap contributors'
     }).addTo(map);
 
@@ -112,7 +112,6 @@ if (document.getElementById('lat').value && document.getElementById('lng').value
     const lat = parseFloat(document.getElementById('lat').value);
     const lng = parseFloat(document.getElementById('lng').value);
 
-    // Show marker
     marker = L.marker([lat, lng]).addTo(map);
     map.setView([lat, lng], 17);
 

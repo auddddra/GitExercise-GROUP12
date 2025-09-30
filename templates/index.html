@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% block body %}
 
-<!-- top login/register button above header -->
 <div class="user-button">
     {% if session.get("user_id") %}
     <!-- show profile button when logged in -->
@@ -25,10 +24,7 @@
             <button type="submit">Search</button>
         </form>
 
-        <!-- {% if session.get('is_admin_temp') %} -->
         <a href="{{ url_for('admin_dashboard') }}" class="btn-outline">💌 Admin</a>
-        <!-- {% endif %} -->
-
 
         <a href="{{ url_for('create')}}" class="btn-outline">💌 Tell us your story</a>
     </div>
@@ -37,7 +33,6 @@
 <div id="map"></div>
 
 <div class="gallery">
-    <!-- User-submitted cards -->
     {% for card in cards %}
         <div class="card" data-card-id="{{ card.id }}">
             <h3>To: {{ card.to_name }}</h3>
@@ -59,7 +54,7 @@
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
-    minZoom: 15, // optional: keep users zoomed in close to MMU
+    minZoom: 15, 
     attribution: '© OpenStreetMap contributors'
     }).addTo(map);
 
