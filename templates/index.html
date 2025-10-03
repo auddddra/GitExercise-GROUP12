@@ -24,7 +24,9 @@
             <button type="submit">Search</button>
         </form>
 
-        <a href="{{ url_for('admin_dashboard') }}" class="btn-outline">💌 Admin</a>
+        {% if session.get("is_admin_temp") %}
+            <a href="{{ url_for('admin_dashboard') }}" class="btn-outline">💌 Admin</a>
+        {% endif %}
 
         <a href="{{ url_for('create')}}" class="btn-outline">💌 Tell us your story</a>
     </div>
