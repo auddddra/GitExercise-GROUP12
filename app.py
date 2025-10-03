@@ -180,11 +180,11 @@ def index():
         filtered_cards = [
             card for card in cards
             if search_query.lower() in card.to_name.lower() or
-            (card.from_name and search_query.lower() in card.from_name.lower())
+            (card.to_name and search_query.lower() in card.to_name.lower())
         ]
         def similarity(card):
             to_similarity = SequenceMatcher(None, search_query.lower(), card.to_name.lower()).ratio()
-            from_similarity = SequenceMatcher(None, search_query.lower(), (card.from_name or "").lower()).ratio()
+            from_similarity = SequenceMatcher(None, search_query.lower(), (card.to_name or "").lower()).ratio()
             return max(to_similarity, from_similarity)
         cards = sorted(filtered_cards, key=similarity, reverse=True)
     else:
